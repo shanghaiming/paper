@@ -1,0 +1,623 @@
+                                            HireVAE: An Online and Adaptive Factor Model Based on Hierarchical and
+                                                                    Regime-Switch VAE
+
+                                                                       Zikai Wei1 , Anyi Rao2 , Bo Dai3 and Dahua Lin1,3
+                                                                              1
+                                                                                The Chinese University of Hong Kong
+                                                                                        2
+                                                                                          Stanford University
+                                                                                     3
+                                                                                       Shanghai AI Laboratory
+
+
+                                                                  Abstract                                 great importance to model the current market regime and de-
+
+
+
+
+arXiv:2306.02848v1 [cs.LG] 5 Jun 2023
+                                                                                                           velop an adaptive factor model associated with different mar-
+                                             Factor model is a fundamental investment tool in              ket situations.
+                                             quantitative investment, which can be empowered                   Both practitioners and academics make many attempts to
+                                             by deep learning to become more flexible and                  model the regime change in markets using statistical learning
+                                             efficient in practical complicated investing situa-           [Guidolin and Timmermann, 2007], machine learning [Uysal
+                                             tions. However, it is still an open question to               and Mulvey, 2021], or hybrid methods [Akioyamen et al.,
+                                             build a factor model that can conduct stock pre-              2020] from different perspectives of the market. Existing
+                                             diction in an online and adaptive setting, where the          data-driven approaches view regime switching as a clustering
+                                             model can adapt itself to match the current mar-              problem and represent each regime as a cluster, subdividing
+                                             ket regime identified based on only point-in-time             the market regime based on the information absorbed from
+                                             market information. To tackle this problem, we                the entire training data. However, this setting is not suitable
+                                             propose the first deep learning based online and              for learning a regime-switching model intended for later use
+                                             adaptive factor model, HireVAE, at the core of                in investment practice. Practice requires an online learning
+                                             which is a hierarchical latent space that embeds              setting that all data used for learning should be point-in-time
+                                             the underlying relationship between the market sit-           data, meaning that there is no future information leakage at
+                                             uation and stock-wise latent factors, so that Hire-           any timestamp in the training data set.
+                                             VAE can effectively estimate useful latent factors
+                                                                                                               In this paper, we thus propose a novel end-to-end neural
+                                             given only historical market information and sub-
+                                                                                                           factor model, referred to as HireVAE, that offers an online
+                                             sequently predict accurate stock returns. Across
+                                                                                                           and adaptive regime-switching capability, targeting two crit-
+                                             four commonly used real stock market benchmarks,
+                                                                                                           ical questions: Q1: How to keep the regime cluster labels
+                                             the proposed HireVAE demonstrate superior per-
+                                                                                                           changing consistently and centers of cluster shifting smoothly
+                                             formance in terms of active returns over previous
+                                                                                                           during training? Q2: How to adaptive learn regime-oriented
+                                             methods, verifying the potential of such online and
+                                                                                                           factor model under different regimes?
+                                             adaptive factor model.
+                                                                                                               To tackle Q1, we develop a module for identifying regimes,
+                                                                                                           in which it learns a set of dynamic distributions associated
+                                        1   Introduction                                                   with different regime clusters. To maintain this regime iden-
+                                                                                                           tifier as a stable clustering module, we design a linear stabi-
+                                        Originating in asset pricing, factor model is the foundation of    lization algorithm to supervise the identifier learn a consistent
+                                        factor-based investing, which simplifies the high-dimensional      clustering that smoothly alternates with a market latent vari-
+                                        characteristics in quantitative investment via an experimental     able. Specifically, a market encoder, which is learned in a
+                                        way to model how factors drive returns and risks. This can         prior-posterior learning framework, will encode the market
+                                        significantly help institutional investors construct diverse and   information into a market latent variable. This framework
+                                        customized portfolios. But, a better-developed capital mar-        can help the market encoder learn the hidden logic between
+                                        ket brings out more challenges in achieving excess returns in      the market information and the average future stock returns
+                                        the market using traditional methods due to more similar in-       in the whole market, which will serve as prior knowledge for
+                                        vesting actions and overlapping trading positions. Although        the market encoder in predicting future stock returns given
+                                        the recent nonlinear data-driven methods [Duan et al., 2022;       only current market information. The market latent variable
+                                        Wei et al., 2022; Gu et al., 2021] enrich the conventional tool    plays two roles in HireVAE: 1) at first it is used to estimate
+                                        library built largely from linear methods [Ng et al., 1992;        the means and variances of K Gaussian distributions, repre-
+                                        Fama and French, 2020], they still face serious issues in han-     senting K regimes. 2) Subsequently, it will also be used to
+                                        dling large, abrupt, and sustained market changes and some         predict K regime indicators measuring the likelihood of each
+                                        factors that worked well in the previous market situation be-      regime being the most suitable one, from which the one with
+                                        come less effective in the new situation. Therefore, it is of      the largest likelihood can thus be identified. It’s worth not-
+                                                                                        framework. 2) We provide an adaptive learning framework
+
+
+
+Market Index (rescaled)
+                          2.0     Regime
+                                       Low                                              for training a regime switch factor model with a hierarchi-
+                                       Medium
+                          1.5                                                           cal latent space that incorporates global observation of stock
+                                       High
+                                                                                        market and stock-oriented latent factors. The decoders are
+                          1.0
+                                                                                        also online trained based on different dynamic market condi-
+                                                                                        tions, each of which takes advantage of regime, market, and
+                                2010        2012   2014   2016     2018   2020   2022
+                                                                                        stock information in the following downstream tasks. 3) We
+           Volatility
+                           1
+                                                                                        develop a linear stabilization algorithm that helps the regime
+                           0
+                                2010        2012   2014   2016     2018   2020   2022   identification process to learn a more consistent and smoother
+                                                            Date                        clustering deep learning technique.
+Figure 1: Identifying market regimes can help make better in-
+vestment decisions, and there is an example that identifies regime                      2   Related Work
+changes based on volatility, where volatility acts as an experience-                    Factor Models. The factor model are traditionally regarded
+and-knowledge based indicator that is widely used in practice.                          as a pricing model in academia [Fama and French, 1992;
+                                                                                        Fama and French, 2020], while practitioners use its anomalies
+                                                                                        as factors to capture excess returns from mispricing [Levin,
+ing that we will sort K estimated regimes by sorting their
+                                                                                        1995]. In recent years, stock forecasting studies based on
+means in descending order, as pointed out by [Botte and Bao,
+                                                                                        machine learning methods are emerging. Machine learning
+2021], where returns and risk-adjusted measures are linearly
+                                                                                        based stock prediction methods are closely related to fac-
+correlated across market regimes, so that we can partition the
+                                                                                        tor models and can be categorized as factor mining and fac-
+whole market situation into market regions following a con-
+                                                                                        tor composition. The former learns a new logical factor
+secutive order. With the help of the market latent variable,
+                                                                                        from new data sources or perspective, while the latter finds
+we can then adaptively select the most suitable regime given
+                                                                                        a better way to compose the existing factors, which can be
+current market information. However, one question remains:
+                                                                                        considered as a machine learning based factor model. In
+How to smoothly update the regime centers and make a con-
+                                                                                        terms of factor mining, existing works on stock prediction
+sistent regime assignment? To ensure consistency of cluster
+                                                                                        study trading patterns [Wang et al., 2022; Ding et al., 2020;
+assignment during training, the cluster ID is always reordered
+                                                                                        Zhang et al., 2017], investment reviews [Wang et al., 2021b],
+in the descending order. In this way, the market latent vari-
+                                                                                        overnight patterns [Li et al., 2021], and the temporal rela-
+able can always be associated with a consistent regime clus-
+                                                                                        tionship of stocks [Wang et al., 2021a]. As for factor com-
+ter and the additional burden of checking for a “wrong as-
+                                                                                        position as nonlinear factor models, existing works learn
+signment” is eliminated. Moreover, to smoothly update the
+                                                                                        optimal latent factors via a variational autoencoder (Factor-
+regime clusters, we use a dynamically weighted moving av-
+                                                                                        VAE) [Duan et al., 2022], a deep multifactor model (DMFM),
+erage algorithm to update the means and standard deviations
+                                                                                        which builds on hierarchical stock graphs [Wei et al., 2022],
+of the clusters, giving more weight to the historical clusters.
+                                                                                        and a deep risk factor model that fuses a set of uncorrelated
+To cope with Q2, we develop an encoder with a hierarchi-
+                                                                                        risk factors from the original style factors [Lin et al., 2021].
+cal latent space of market and stock latent variables and a
+                                                                                        Unlike existing methods, our model aims to learn an adaptive
+set of regime-based stock decoders, each of which recov-
+                                                                                        factor model that can recognize the current market regime and
+ers or predicts stock returns based on regime, market, and
+                                                                                        use a learnable and more appropriate factor composition for
+stock latent factors. With this linear stabilization algorithm
+                                                                                        that market regime, which can enable a market-driven invest-
+for learning market regimes, the end-to-end training frame-
+                                                                                        ment decision.
+work can adpatively learn different market conditions as well
+as the corresponding regime-specific factor model for stock                             Regime Switching [Hamilton, 1989] provide a statisti-
+prediction. In a later section, we will show the advantages                             cal modeling framework to address the problem of regime
+of this algorithm for regime switching with adaptive learning                           switching in various circumstances, such as regime switch-
+compared to rule-based regime switching, e.g., categorizing                             ing in interest rates [Ang and Bekaert, 2002], asset al-
+market regimes with respect to different volatility levels.                             location [Guidolin and Timmermann, 2007], and financial
+                                                                                        markets[Zhu, 2022]. In the cryptocurrency market, [Zhu,
+Example 1 (Determining regimes helps better decision mak-
+                                                                                        2022] shows that regime switching methods perform bet-
+ing). Figure 1 shows the structural changes of the CSI All
+                                                                                        ter than methods without regime switching. Machine learn-
+Share Index, composed of all stocks in China stock market, in
+                                                                                        ing based methods open another main direction in model-
+terms of volatility level. When volatility is high, there is usu-
+                                                                                        ing regime switching, such as Hidden Markov Model [Wang
+ally a change from a bullish market to a bearish market. In
+                                                                                        et al., 2020] and Gaussian Mixed Models [Botte and Bao,
+contrast, medium volatility usually occurs during the period
+                                                                                        2021]. As a hybrid method, [Akioyamen et al., 2020] applies
+when the market is changing trend at a more steady pace. The
+                                                                                        principal component analysis and k-means clustering to iden-
+market begins a long bull run when the low volatility prevails
+                                                                                        tify regimes in financial markets. Deep learning based regime
+most of the time.
+                                                                                        switching models of energy commodity prices [Mari and
+   The contribution of our paper are as follows: 1) To the best                         Mari, 2022]. Unlike the existing regime switching method, in
+of our knowledge, we are the first to propose regime switch-                            investment practice, we not only need to use an online learn-
+ing with online regime learning in an end-to-end training                               ing algorithm to identify market regimes, but also need to
+                                                                  Observation          Market-Aware Stock Encoder 𝒎𝒑𝒓𝒊𝒐𝒓 𝒛𝒑𝒓𝒊𝒐𝒓            Regime-based Decoders
+learn an adaptive factor model based on the determination of
+                                                                        𝑿                                                   Stock Latent
+the market regime.                                                          Market Encoder
+                                                                                                                              Variable                       Rec. Obs.
+                                                                                             Market Latent   𝑞!! (𝒛|𝒙, 𝒎)      𝒛𝒑𝒐𝒔𝒕        𝑞!# 𝒙 𝒛, 𝒎; 𝑐(      𝑿*
+Variational Autoencoder. Variational Autoencoder (VAE)            Global Obs.                  Variable                                      𝑖 = 1, … , 𝑁)
+                                                                        𝑴                       𝒎𝒑𝒐𝒔𝒕                       Switch
+[Kingma and Welling, 2013], one of the major families of                        𝑞!" (𝑚|𝑴)
+                                                                                                                            𝑐 = 𝑓(𝒎)
+deep generative models, provides a prior-posterior framework
+that encodes the observation as prior knowledge in a latent
+space, and later [Vahdat and Kautz, 2020] introuduce a hier-                     Figure 2: The brief architecture of HireVAE.
+archical pipeline into VAE. [Chung et al., 2015] is the first
+to extend VAE to sequential modeling. Then, the variational       pipeline, we develop a hierarchical encoder with a two-level
+methods are extended to neural machine translation [Su et al.,    latent space representing a market-stock hierarchy, and cou-
+2018] and trajectory prediction. In the area of financial ap-     ple it with a set of regime-specific decoders that reconstruct
+plications, VAE includes topics such as stochastic volatility     or predict stock returns based on different market situations.
+models [Luo et al., 2018] and factor models. The latter VAE       First, the market encoder extracts market latent factors from
+family includes applications in factor mining based on social     multimodal features. Then, the stock encoder plays the role of
+media in the context of stocks [Xu and Cohen, 2018], appli-       a conditional encoder that extracts stock latent factors based
+cations in factor composition where [Duan et al., 2022] aims      on stock features and market latent factors. This hierarchi-
+to learn representative latent factors from existing technical    cal structure can help the stock latent factor better recognize
+factors, and [Gu et al., 2021] aims to learn a pricing model.     the market situation. In the middle of this encoder-decoder
+                                                                  architecture, a regime-switching module acts as a mediator
+3   Preliminaries                                                 to match an appropriate regime-specific decoder to the latent
+In this section, we first define the stock prediction problem     market situation.
+and then introduce the problem setting from the perspective          Specifically, this architecture consists of four parts: an ex-
+of learning a data-driven method.                                 planation of the feature extraction procedure from sequential
+                                                                  data, an overview of the hierarchical encoder-decoder struc-
+Definition 1 (Stock prediction). In general, stock prediction
+                                                                  ture, a regime switching learning algorithm, and the learning
+problem can be defined as learning a mapping f (·; Θ) from
+                                                                  objectives in prior-posterior learning.
+the past information set F<t to future stock return yt+∆t ,
+where ∆t is the prediction length, ŷt+∆t = E (yt+∆t |F<t ) is    4.1       Extracting Features from Sequential Data
+its corresponding expected future return, and Θ is the model
+parameter of data-driven method f (·).                            We establish two inherent feature extractors, i.e., stock-
+                                                                  specific and market-specific extractors.
+   In our setting, we have a set of samples labeled with time
+stamps sorted in chronological order: D = {Dt0 , . . . , Dtn },   Stock Features. The stock feature extractor ϕfs eat , extracts
+where n is the total number of trading days covered by            features es from the historical stock characteristics: es =
+the dataset. For a single data sample Dt = {Xt , Mt },            ϕfs eat (X), where X ∈ RT ×N ×C and es ∈ RN ×H represents
+Xt ∈ RT ×N ×C and Mt ∈ RT ×Cm are sequential features             the extracted stock features with a hidden size H. Specifi-
+of stocks and the market, where T , N and C(·) represent          cally, es is the latest hidden state obtained by a gated recur-
+the length of the historical sequence, the number of stocks       rent united which summarizes all temporal information.
+and the number of features. Moreover, the overall pattern         Market Features. For sequential market data Mt ∈
+of the market (global observation) consists of information        RT ×Cm consists of information with d multimodal features,
+from d modalities, based on which it can be segmented as          we introduce a set of extractors ϕfm,i   eat
+                                                                                                               (·) associated with
+Mt = [M1t , . . . , Mdt ]. The above are general input dataset.                             i
+                                                                  different modalities Mt ∈ R        T ×Ci
+                                                                                                           , i = 1, . . . , d, and
+   Besides, the corresponding target set of D is Y =              Pd       i
+{Yt0 , . . . , Ytn }, where Yt = {yt+∆t }, ∆t is the length of       i=1 C t =  C m . We  use d! cross attention  modules [Hou et
+prediction horizon, and yt+∆t ∈ RN is the future cross-           al., 2019] to learn pairwise features from each modality pair.
+section returns of N stocks in the market over the time period    Later, we extract the market features v from all these pair-
+from t to t + ∆t.                                                 wise features by concatenation. In our setting, a market can
+   Our target is to learn a optimal Θ∗ of a data driven model     be represented by an index composed of all the stocks in the
+                                                                  market. The different modalities are the market momentums
+f (·; Θ) with learnable parameter Θ such that Ŷ ← f (D; Θ).      (defined as the cumulative return over a period of time), the
+                                                                  levels of relative trading volume, and the market volatilities
+4   Methodology                                                   over different time frames.
+In this section, we introduce HireVAE to identify the mar-
+ket regime with online learning in conjunction with a linear      4.2       Hierarchical Encoder-Decoder Structure
+stabilization clustering algorithm and learn an adaptive factor   To help the model better identify the market situation and bet-
+model to extract the latent logic behind the market and stocks    ter interpret future stock returns in different market situations,
+under different regimes. The brief framework of HireVAE is        we design the latent space in a hierarchical structure that rep-
+given in Figure 2.                                                resents latent factors from the market and stocks. A pair of
+   The architecture of our model is derived from a VAE            encoders is designed to learn latent variables from market and
+encoder-decoder structure. In contrast to the classical           stocks based on the market and stock features.
+Posterior Structure in Training Phase                                   Algorithm 1 Linear stabilization clustering algorithm
+In the training phase, the market encoder generates a market            Input: Training data Dtrain = {D1batch , . . . , DN
+                                                                                                                          batch
+                                                                                                                                } s.t. all
+                                                                                                                            b
+latent variable, based on which and in conjunction with both            data items are sorted in chronological order
+future stock returns and historical stock features a market-            Parameter: Model parameters Φ, regime distribution param-
+aware stock encoder can learn stock latent features. After              eters µr ∈ RNr and σ r ∈ RN     r
+                                                                                                      +
+the current market regime is identified by a regime switching           Output: Regime ci , i = 1, . . . , Nb
+algorithm, a regime-specific decoder can reconstruct future
+stock returns.                                                           1: Randomly initialize µr and σ r with σ r ≥ 0
+                                                                         2: while i ≤ Nb do
+Market Encoder. The market encoder ϕm            enc extracts poste-     3:     Projection to 1D score space: si ← Score Dibatch 
+                                                                                                                                       
+rior market latent factor m from the extracted market infor-
+                                                                         4:     Pred. cluster center: µi , σ i ← DistShift Dibatch
+mation v, and future average return of all stocks ȳ:
+                [µm         m          m
+                   post , σ post ] = ϕenc (v, ȳ),                       5:   Sort cluster center: µ∗i , σ ∗i ← Sort (µi , σ i )
+                m ∼ N µm                    m
+                                                                        6:   Update cluster center:
+                              post , diag(σ post ) ,
+                                                                                  µr ← βµr + (1 − β)µ∗i
+where m ∈ RHm is the market latent factor following a Gaus-                       σ r ← βσ r + (1 − β)σ ∗i
+sian distribution, parameterized by mean µm         post and standard
+                                                                                                                                 
+                                                                         7:   Calc. regime prob.: pi ← N si ; µr , diag(σ 2r )
+deviation σ m
+            post and Hm is the market hidden size.                       8:   Pred. regime: ci ← ArgMax (pi )
+Market-Aware Stock Encoder. The stock encoder ϕsenc                      9: end while
+extracts posterior stock latent factors z from the market la-           10: return regime ci , i = 1, . . . , Nb
+tent factor m, stock features es , and future stock returns y:
+               [µspost , σ spost ] = ϕsenc (v, es , y) ,                4.3   Regime Switching with Online Learning
+               z ∼ N µspost , diag(σ spost ) ,
+                                                
+                                                                        In order to learn an adaptive factor model that can handle var-
+                                                                        ious regimes, the first step is to identify these regimes based
+where z ∈ RHs is the stock latent factors following a Gaus-
+                                                                        on point-in-time (PIT) market information. To achieve con-
+sian distribution, parameterized by mean µspost and standard
+                                                                        sistent and smooth market clustering based on a market latent
+deviation σ spost and Hs is the stock hidden size.
+                                                                        variable m ∈ RHm extracted from the mixed market fea-
+Regime-Switch Factor Decoder. We develop a learning al-                 tures v ∈ RHc , we develop an online learning clustering al-
+gorithm to distinguish the current market situation from dif-           gorithm with linear stabilization summarized in Algorithm 1.
+ferent regimes in the latter part of the paper (Section 4.3).           First, we project the market latent variable onto a 1D mea-
+To learn an adaptive factor model for different market situa-           sure space, and consider its relative score in this 1D space as
+tions, we design a regime-switch factor decoder consisting of           a random variable from a market regime distribution. Then,
+Nk sub-decoders that can reconstruct future stock returns ŷ            we compute the log-likelihood of this score w.r.t the distribu-
+based on stock latent factors z and market latent factors m:            tions of different market regimes and choose the regime with
+                     ŷ = ϕdec (z, m, es ; c) ,                         largest log-likelihood as the predicted regime.
+where c ∈ {1, . . . , Nk } denotes a market regime. More pre-           Projection to 1D Space. A project layer ϕproj projects the
+cisely, c = f (m) where f (·) is a switching function (algo-            market latent variable m ∈ RHm onto a 1D regime measure
+rithm) that can identify the regime based on the market latent          space. We define s = ϕproj (m), s ∈ R, as the “score” of the
+factors m.                                                              current market situation and it plays a role as a 1D measure
+                                                                        of the overall market status. This market score s is consid-
+Prior Structure in Prediction Phase                                     ered as a given sample in the sample spaces of the different
+First, the market prior generates market latent factors m0              regimes. Later, we can measure how much more likely this
+based on the extracted market information v from various                market score s belongs to a given market regime.
+modalities. Later, the stock prior generates stock latent fac-
+                                                                        Determination of Market Regimes. Denote the number
+tors z0 based on the market prior variables m0 and stock char-
+                                                                        of market regimes as Nr . We assume that r is a Gaus-
+acteristics es . The decoder predicts future returns based on
+                                                                        sian random vector given by r ∼ N (µr , diag(σ r )), where
+the market-stock priors and the regime c determined by the
+switch function. Specifically,                                          µr ∈ RNr and standard deviation σ r ∈ RN         r
+                                                                                                                       + are the repre-
+                                                                        sentatives of regime centers and regime deviations w.r.t Nr
+          [µm      m      m
+             0 , σ 0 ] = ϕprior (v),                                    regime clusters. To keep each regime as different as possible,
+          m0 ∼ N (µm                m
+                         0 , diag(σ 0 )) ,                              we use Kullback-Leibler divergence (KL) to measure the dif-
+            s     s       s
+          [µ0 , σ 0 ] = ϕprior (m0 , es ) ,                             ference between two distributions and define the loss function
+                                                                        in terms of market regimes as
+          z0 ∼ N (µs0 , diag(σ s0 )) ,                                                     X
+                                                                                                   KL N µi , σi2 ||N µj , σj2 ,
+                                                                                                                               
+                                                                            Lreg = −
+          ŷ = ϕdec (z0 , m0 , es ; c) with c = f (m0 ),
+                                                                                        i=1,...,Nr
+where m0 ∈ RHm follows a Gaussian distribution with pa-                                j=i+1,...,Nr
+rameters µm          m
+            0 and σ 0 , and z0 ∈ R
+                                     Hs
+                                           follows a Gaussian           where µi and σi are the i-th element of the mean vector µr
+distribution with parameters µ0 and σ s0 .
+                              s
+                                                                        and the deviation vector σ r , respectively.
+Regime Learner. To determine the centers of each regime,                     Method           IC    Rank IC      Rank ICIR
+the regime learner ϕreg predicts the parameters of the market
+regime distribution, i.e. [µr , σ r ] = ϕreg (m). Specifically,              Linear        0.030       0.031          0.322
+                                                                             GRU           0.046       0.050          0.484
+               µr = wµ,r v + bµ,r ,                                          MLP           0.053       0.051          0.537
+               σ r = Softplus (wσ,r v + bσ,r ) .                             Trans         0.050       0.040          0.253
+                                                                             GAT           0.029       0.032          0.466
+To keep the shift of regimes consistent and smooth in 1D mea-                IGAT          0.012       0.018          0.210
+sure space, a sorting function is applied to the mean values of              DMFM          0.014       0.015          0.480
+all regime centers µr ∈ RNr in descending order and the cor-                 VAE           0.049       0.059          0.539
+responding deviation terms are reordered w.r.t. the new order                CVAE          0.053       0.063          0.628
+of sorted mean values. Formally,                                             HiReVAE       0.058       0.066          0.734
+                       [µ∗r , I ∗r ] = Sort (µr ) ,
+                                                                    Table 1: Evaluation the performance of various methods in terms of
+                              σ ∗r = σ r [I ∗r ],                   their predictive power.
+where µ∗r is a reordered mean vector, I ∗r is its correspond-
+ing reordered index w.r.t. its original index, and σ ∗r is a re-    our model through various experiments. These experiments
+ordered deviation vector w.r.t. this reordered index I ∗r . These   are designed to investigate the following research questions.
+reordered mean and deviation vectors obtained in each batch         Exp 1: Does our method outperform the state-of-the-art
+are later used to update each regime center (µr and σ r ) with      methods in terms of factor investing?
+a weighted moving average, allowing the regime center to be         Exp 2: Is the improvement in effectiveness mainly due to the
+updated gradually.                                                  additional market information?
+Regime Prediction. We assume that the market score s is a           Exp 3: How does regime switch help adaptive learning in
+random variable generated from a market regime distribution         factor models?
+defined as a Gaussian distribution. For Nk regimes, we have         Exp 4: Is the hierarchical structure necessary in our design?
+Nk market regime distributions, for each of which we can
+calculate the log-likelihood of the current market score s:         5.1   Experiment Settings
+                                                        i 2
+                                                             !      Dataset Construction. We conduct the experiment over the
+                               1            1   (s −  µ r )
+  l s; µir , σri = − ln(σri ) − ln(2π) −
+                
+                                                               ,    entire China stock market, with price-volume and fundamen-
+                               2            2       σri             tal data obtained from the WIND database, and all raw data
+                                                                    processed on a point-in-time basis. The stock pool is con-
+                                                                    structed based on all on-listing stocks, except for stocks that
+where i = 1, . . . , Nk . The regime is predicted to be the         receive special treatments (ST) and those that have been on
+regime with the maximum log-likelihood among all regimes:           the market for less than three months. When a company is
+                                                                    labeled as ST, which means it suffer losses for two or more
+        c = argmaxj [l s; µir , σri , i = 1, . . . , Nk ],
+                                   
+                                                                    consecutive years. We follow the same paradigm as in [Wei
+where c indicates the predicted market regime.                      et al., 2022] to construct stock features and select 58 features
+                                                                    that have a good coverage over the entire stock market. The
+4.4    Learning Objective                                           length of the sequential data and the prediction horizon are
+Our learning objective consists of three parts, where the first     T = 20 and ∆t = 20, respectively. The stock returns are
+part is to learn a better future stock return reconstruction, the   calculated on a basis of volume weighted average prices. We
+second part is to learn latent market features and latent stock     choose the dataset and data split settings as in [Wei et al.,
+features in a hierarchical structure, and the third part is to      2022] instead of [Duan et al., 2022] because the former bet-
+learn a more differentiated regime clusters. Thus, the overall      ter covers the period from 2010 to mid-2022 and has a longer
+loss function of our HireVAE is as follows,                         test set from mid-2015 to mid-2022 than the latter from 2019
+                                                                    to 2020. There are 14 groups of training, validation, and test
+                 N
+                 Xr
+                                                                    datasets. To prevent information leakage, we delete the data
+      Lrec = −         1f (m) (r) ln Pϕdec (ŷ = y|X, M, z, m; r)   items from the validation dataset when the future stock re-
+                 r=1
+                                                                   turns in the validation dataset are covered by the time period
+  Lhier = KL Pϕenc (m|M, ȳ) ||Pϕprior (m|M, ȳ) +                  of the test dataset.
+                                                             
+             KL Pϕenc (z|X, M, m, y) ||Pϕprior (z|X, M, m) Baselines. To allow a fair comparison, we provide the same
+                                                               sequential data to all methods. We compare our HiReVAE
+Loverall = Lrec + Lhier + Lreg .
+                                                               to the factor models as follows: ① Linear is a linear factor
+                                                               model derived from [Fama and French, 1992], with average
+5 Experiments                                                  pooling on the sequential dimension. ② GRU [Chung et al.,
+In this section, we evaluate the proposed HireVAE on real      2014] is a factor model in which a GRU extracts the sequen-
+stock market data, choosing one of the largest emerging mar-   tial features and, in conjunction with a linear layer, predicts
+kets as representative, and demonstrate the effectiveness of   future returns. ③ Trans [Ding et al., 2020] is a factor model
+                                    CSI 300           CSI 500         CSI 1000          CNI 2000           CSI ALL
+                   Method          AR↑ IR↑           AR↑ IR↑          AR↑ IR↑           AR↑ IR↑           AR↑ IR↑
+                   Linear         11.94     0.30     8.81    0.50      6.98    0.65     5.04    0.49      5.82     0.89
+                   GRU            19.40     0.60    15.04    0.80     12.89    0.96    11.27    0.84     13.25     2.20
+                   MLP            23.04     0.78    20.20    1.10     18.12    1.22    16.87    1.09     19.25     3.53
+                   Trans           7.21     0.18     4.63    0.28      3.03    0.41     0.68    0.24      0.22     0.27
+                   GAT             5.77     0.14     5.65    0.19      4.33    0.29     2.30    0.16      2.08     0.31
+                   IGAT           12.67     0.41    10.32    0.61      8.47    0.69     6.85    0.54      8.43     2.04
+                   DMFM            3.16     0.05     2.13    0.20      0.78    0.35     1.50    0.18      2.24     0.32
+                   VAE            26.49     0.82    25.04    1.11     23.32    1.23    19.05    1.02     23.72     4.38
+                   CVAE           27.78     0.91    25.84    1.24     24.00    1.36    22.76    0.99     24.91     5.46
+                   HiReVAE        30.89     0.89    29.05    1.23     27.14    1.35    25.94    1.18     28.02     5.92
+
+             Table 2: The performances on portfolio construction over the period from mid-2015 to mid-2022 (best/2nd best).
+
+
+based on Transformer. ④ MLP [Levin, 1995] is the first non-                   Method     Mkt      rIC      rICIR          AR        IR
+linear factor model with multilayer perceptrons, where we
+equip it with a GRU to extract time-series features. ⑤ GAT                    GRU          ✓     0.051     0.484     13.180     2.202
+[Veličković et al., 2018] is a graph attention work with a fully            GRU-s        ✗     0.050     0.485     13.249     2.107
+connected stock graph. ⑥ IGAT [Wei et al., 2022] is a GAT,                    MLP          ✓     0.051     0.537     19.247     3.525
+based on a stock-industry graph where there is an edge be-                    MLP-s        ✗     0.051     0.540     19.251     3.454
+tween two nodes if two stocks belong to the same industry. ⑦
+                                                                              VAE          ✓     0.059     0.539     23.724     4.377
+DMFM [Wei et al., 2022] is a deep multifactor model built
+                                                                              VAE-s        ✗     0.059     0.540     23.589     4.267
+on top of a stock graph. ⑧ VAE [Duan et al., 2022] is a stock
+prediction method based on VAE that treats latent stock vari-
+                                                                       Table 3: Ablation study of the difference in the use of market in-
+ables as the optimal factors thus learned. ⑨ CVAE [Gu et al.,
+                                                                       formation. RIC rICIR, AR and IR are abbreviations for rank IC,
+2021] is a factor model with a conditional autoencoder.                rankICIR and active return, portfolio information ratio, respectively.
+                                                                       The “-s” stands for the exclusive use of stock characteristics.
+5.2   Exp 1: Effectiveness of HireVAE
+In this experiment, we verify the effectiveness of our Hire-           each stock, we construct only the portfolio holding the Top-1
+VAE with respect to factor investing. In this context, factor          group. The frequency of rebalancing is monthly. All transac-
+models are the essential tools in factor investing, where the          tion costs and taxes are included in our backtesting.
+objective is to answer two practical questions: 1) whether the            The CSI300, the CSI500, the CSI1000 and the CNI2000
+model explains (future) stock returns well and 2) whether it           are widely used benchmarks in China stock markets and con-
+provides good stock selection.                                         sist of the most representative stocks in market hierarchy. In
+                                                                       particular, the CSI300 consists of the 300 most liquid and
+Predictive Power                                                       largest stocks. The CSI500, representing mid-caps, consists
+To evaluate the predictive power of the compared methods,              of the 500 most liquid and largest stocks. The CSI1000 con-
+we use two metrics widely used in industry and academia                sists of the following 1000 stocks representing small caps. In
+[Duan et al., 2022; Wei et al., 2022], i.e., the rank information      addition, the CNI2000 is another representative of small caps
+coefficient (IC), the rank information coefficient (RankIC),           and consists of 2000 stocks.
+and the information ratio of RankIC (RankICIR) , where Ran-               To test the potential of subsequent use in the construction
+kICIR is the z-score of RankIC. To reconcile deterministic             of enhanced index funds (EIFs), we compare the different
+and generative methods in prediction, we use the means of the          methods. We report two metrics that are widely used in in-
+hierarchical priors as the deterministic values and determine          vestment practice: the annualized active return (AR) relative
+the predicted stock return by ŷ = ϕdec (µs0 , µm   0 , es ; c). By    to an investment benchmark and the information ratio of a
+comparison in Table 1, HireVAE outperforms the compared                portfolio (IR), the latter being a risk-adjusted measure. We
+methods, illustrating its effectiveness in stock prediction.           use ↑ to indicate that a larger value is better. As shown in
+Stock Selection                                                        Table 2, the HireVAE can achieve better active returns over a
+The most widely used method to test the ability of a factor            long investment period across different market hierarchies.
+model in portfolio construction is Top-1-of-G Groups. Specif-
+ically, this involves sorting stocks in descending order w.r.t         5.3    Exp 2: Improvement Not From Extra Info
+the expected returns estimated by a factor model and then              Theoretically, see our experiment settings in Section 5.1, we
+dividing the sorted stocks into G groups. In addition, a long-         use all stocks included in the CSI All A Share Index, an
+short portfolio can be created by buying the Top-1 group and           overall market representative of Chinese stock markets. At
+short selling the Bottom-1 group simultaneously. Since short           its core, the index is roughly calculated by a capitalization-
+selling in Chinese stock markets is not always possible for            weighted sum of the prices of all stocks, which means that
+      Method          Algo     Enc      rIC    rICIR        AR          Algorithm 2 Volatility-based regime identification
+      RVAE-v          Rule      ✗      0.05      0.67    21.62          Input: Volatility data Dσ = {σt0 , . . . , σtn } where all volatil-
+      RVAE            Clus      ✗      0.05      0.50    13.72          ity data items are sorted in chronological order, and the num-
+      RCVAE-v         Rule      ✗      0.04      0.38    14.85          ber of regimes K (K ≥ 2)
+      RCVAE           Clus      ✗      0.03      0.32     2.61          Output: Regime ct
+      HiReVAE-v       Rule      ✓      0.06      0.67    24.54            1: Initialize σmin =h+∞ and iσmax = −∞h                   
+      HiReVAE         AOL       ✓      0.07      0.73    28.02                                    (K−1)                   (k−1) k
+                                                                          2: Initialize IK =        K   , 1 and  I k =      K   , K , for
+                                                                             k = 1, . . . , K − 1
+Table 4: Ablation study on the rule-based and the end-to-end regime       3: while t ≤ tn do
+switching identifier in terms of their predictive power and stock se-
+lection performance on all Chinese A-shares. The rIC, rICIR, AR
+                                                                          4:    σmin ← min(σmin , σt )
+are abbreviations for rank IC, rankICIR and active return, respec-        5:    σmax ← max(σmax , σt )
+tively. “-v” stands for regime change based on rule-based algorithm.      6:    σlevel ← (σt − σmin )/(σmax − σmin )
+                                                                          7:    while k ≤ K do
+                                                                          8:       if σlevel ∈ Ik then
+this index is calculated based on the most basic stock charac-            9:          ct ← k.
+teristics, price and market capitalization. Some of the orig-           10:        end if
+inal stock characteristics are also calculated based on these           11:     end while
+two basic characteristics. Thus, the market index is a “global          12: end while
+observation” of all stocks and no additional information is             13: return regime ct
+added to the original raw data.
+   To provide empirical support for the previous argument,
+we conduct two experiments. First, all methods use the same                  Method         Hier    MLV        rIC    rICIR       AR
+input characteristics for stocks and the market, and the cor-
+responding results are reported in Table1 and 2. Second, in                  VAE               ✗        ✓     0.06     0.63     23.72
+Table 3, we show the comparisons between the baseline meth-                  HiVAE             ✓        ✓     0.07     0.68     23.13
+ods in terms of using market information, selecting the base-                RVAE              ✗        ✓     0.05     0.50     13.72
+line methods that performed well in Exp 1 as our baseline                    RCVAE             ✗        ✓     0.03     0.32      2.61
+methods in Exp 2. The results show that the additional mar-                  HiReVAE           ✓        ✓     0.07     0.73     28.02
+ket information does not help to improve the performance of
+a model.                                                                Table 5: The result of the experiment showing the need for a hier-
+                                                                        archical structure in learning an online and adaptive regime switch-
+5.4    Exp 3: Adaptive Learning is Better                               ing identifier. The MLV is the abbreviation for the market latent
+Determining the regime on the basis of volatility is a way of           variable, which indicates whether the MLV participates in regime
+                                                                        switching learning.
+establishing regimes on the basis of rules of thumb [Botte
+and Bao, 2021]. Inspired by this knowledge and experi-
+ence, we develop a rule-based method shown in Algorithm
+                                                                        than the raw data. However, in the case of regime switching,
+2. We consider this method as a baseline for regime switch-
+                                                                        the market latent variable plays an important role in end-to-
+ing to its online and adaptive counterpart. Table 4 shows the
+                                                                        end regime switching learning, as it is used to estimate the
+performance of the different regime-switching algorithms in
+                                                                        regime region and predict the corresponding indicators that
+stock prediction and portfolio construction, where we select
+                                                                        measure the probability of being in each regime. This can
+the most recommended stocks from the entire market (10%
+                                                                        be empirically demonstrated by the fact that HireVAE out-
+stocks from the market). In different modeling settings, our
+                                                                        performs the other two regime switching methods without
+adaptive regime switching algorithm can always outperform
+                                                                        considering the market latent variable, RVAE and RCVAE,
+the rule-based and neural clustering counterparts.
+                                                                        in terms of predictive power and stock selection ability.
+5.5    Exp 4: Hierarchy is Necessary
+In this experiment, we analyze the necessity of using a hier-           6    Conclusion
+archical structure in two ways: first, does a hierarchical latent
+space (HVAE) encode market information better than a single             In this paper, we present HireVAE, a novel end-to-end neural
+latent space (VAE)? Second, does the hierarchical structure             factor model that can identify current market regime accord-
+help the end-to-end clustering algorithm in adaptive learning           ing to point-in-time market information, and subsequently
+of market regimes.                                                      adapt itself for better prediction. HireVAE achieves such an
+   Table 5 can answer these two questions accordingly. As for           ability by a pair of hierarchically organized encoders respec-
+the first question, encoding market information alone does not          tively process global market situation and stock-wise latent
+provide significant improvement in the non-regime-swithcing             factors. Being the first online and adaptive regime-switch fac-
+modeling, since the metrics of VAE and HiVAE are similar.               tor model, HireVAE achieves superior performance on real
+This is reasonable, as we showed in Section 5.3, where the              stock market data, outperforming classical linear methods
+market information itself does not provide more information             and recent non-linear data-driven methods by a large margin.
+Acknowledgments                                                  [Hou et al., 2019] Ruibing Hou, Hong Chang, Bingpeng Ma,
+This project is funded in part by Shanghai AI Laboratory,          Shiguang Shan, and Xilin Chen. Cross attention network
+CUHK Interdisciplinary AI Research Institute, and the Cen-         for few-shot classification. Advances in Neural Informa-
+tre for Perceptual and Interactive Intelligence (CPII) Ltd un-     tion Processing Systems, 32, 2019.
+der the Innovation and Technology Commission (ITC)’s In-         [Kingma and Welling, 2013] Diederik P Kingma and Max
+noHK.                                                              Welling. Auto-encoding variational bayes. arXiv preprint
+                                                                   arXiv:1312.6114, 2013.
+References                                                       [Levin, 1995] Asriel Levin. Stock selection via nonlinear
+[Akioyamen et al., 2020] Peter Akioyamen, Yi Zhou Tang,             multi-factor models. Advances in Neural Information Pro-
+   and Hussien Hussien. A hybrid learning approach to de-           cessing Systems, 8, 1995.
+   tecting regime switches in financial markets. In Proceed-     [Li et al., 2021] Wei Li, Ruihan Bao, Keiko Harimoto, Deli
+   ings of the First ACM International Conference on AI in          Chen, Jingjing Xu, and Qi Su. Modeling the stock relation
+   Finance, pages 1–7, 2020.                                        with graph network for overnight stock movement predic-
+[Ang and Bekaert, 2002] Andrew Ang and Geert Bekaert.               tion. In IJCAI, pages 4541–4547, 2021.
+   Regime switches in interest rates. Journal of Business &      [Lin et al., 2021] Hengxu Lin, Dong Zhou, Weiqing Liu, and
+   Economic Statistics, 20(2):163–182, 2002.
+                                                                    Jiang Bian. Deep risk model: a deep learning solution for
+[Botte and Bao, 2021] Alex Botte and Doris Bao. A machine           mining latent risk factors to improve covariance matrix es-
+   learning approach to regime modeling. Two Sigma, 2021.           timation. In Proceedings of the Second ACM International
+[Chung et al., 2014] Junyoung Chung, Caglar Gulcehre,               Conference on AI in Finance, pages 1–8, 2021.
+   KyungHyun Cho, and Yoshua Bengio. Empirical evalua-           [Luo et al., 2018] Rui Luo, Weinan Zhang, Xiaojun Xu, and
+   tion of gated recurrent neural networks on sequence mod-        Jun Wang. A neural stochastic volatility model. In Pro-
+   eling. arXiv preprint arXiv:1412.3555, 2014.                    ceedings of the AAAI Conference on Artificial Intelligence,
+[Chung et al., 2015] Junyoung Chung, Kyle Kastner, Lau-            volume 32, 2018.
+   rent Dinh, Kratarth Goel, Aaron C Courville, and Yoshua       [Mari and Mari, 2022] Carlo Mari and Emiliano Mari. Deep
+   Bengio. A recurrent latent variable model for sequential        learning based regime-switching models of energy com-
+   data. Advances in neural information processing systems,        modity prices. Energy Systems, pages 1–22, 2022.
+   28, 2015.
+                                                                 [Ng et al., 1992] Victor Ng, Robert F Engle, and Michael
+[Ding et al., 2020] Qianggang Ding, Sifan Wu, Hao Sun, Ji-
+                                                                   Rothschild. A multi-dynamic-factor model for stock re-
+   adong Guo, and Jian Guo. Hierarchical multi-scale gaus-         turns. Journal of Econometrics, 52(1-2):245–266, 1992.
+   sian transformer for stock movement prediction. In IJCAI,
+   pages 4640–4646, 2020.                                        [Su et al., 2018] Jinsong Su, Shan Wu, Deyi Xiong, Yaojie
+[Duan et al., 2022] Yitong Duan, Lei Wang, Qizhong Zhang,           Lu, Xianpei Han, and Biao Zhang. Variational recurrent
+                                                                    neural machine translation. In Proceedings of the AAAI
+   and Jian Li. Factorvae: A probabilistic dynamic fac-
+                                                                    conference on artificial intelligence, volume 32, 2018.
+   tor model based on variational autoencoder for predicting
+   cross-sectional stock returns. In 36th AAAI Conference on     [Uysal and Mulvey, 2021] A Sinem Uysal and John M Mul-
+   Artificial Intelligence, 2022.                                  vey. A machine learning approach in regime-switching
+[Fama and French, 1992] Eugene F Fama and Kenneth R                risk parity portfolios. The Journal of Financial Data Sci-
+   French. The cross-section of expected stock returns. the        ence, 3(2):87–108, 2021.
+   Journal of Finance, 47(2):427–465, 1992.                      [Vahdat and Kautz, 2020] Arash Vahdat and Jan Kautz.
+[Fama and French, 2020] Eugene F Fama and Kenneth R                Nvae: A deep hierarchical variational autoencoder.
+   French. Comparing cross-section and time-series factor          Advances in Neural Information Processing Systems,
+   models. The Review of Financial Studies, 33(5):1891–            33:19667–19679, 2020.
+   1926, 2020.                                                   [Veličković et al., 2018] Petar Veličković, Guillem Cucurull,
+[Gu et al., 2021] Shihao Gu, Bryan Kelly, and Dacheng Xiu.         Arantxa Casanova, Adriana Romero, Pietro Liò, and
+   Autoencoder asset pricing models. Journal of Economet-          Yoshua Bengio. Graph attention networks. In Interna-
+   rics, 222(1):429–450, 2021.                                     tional Conference on Learning Representations, 2018.
+[Guidolin and Timmermann, 2007] Massimo Guidolin and             [Wang et al., 2020] Matthew Wang, Yi-Hong Lin, and Ilya
+   Allan Timmermann. Asset allocation under multivariate           Mikhelson. Regime-switching factor investing with hid-
+   regime switching. Journal of Economic Dynamics and              den markov models. Journal of Risk and Financial Man-
+   Control, 31(11):3503–3544, 2007.                                agement, 13(12), 2020.
+[Hamilton, 1989] James D Hamilton. A new approach to             [Wang et al., 2021a] Heyuan Wang, Shun Li, Tengjiao
+   the economic analysis of nonstationary time series and the      Wang, and Jiayi Zheng. Hierarchical adaptive temporal-
+   business cycle. Econometrica: Journal of the econometric        relational modeling for stock trend prediction. In IJCAI,
+   society, pages 357–384, 1989.                                   pages 3691–3698, 2021.
+[Wang et al., 2021b] Heyuan Wang, Tengjiao Wang, Shun
+  Li, Shijie Guan, Jiayi Zheng, and Wei Chen. Heteroge-
+  neous interactive snapshot network for review-enhanced
+  stock profiling and recommendation. In IJCAI, pages
+  4541–4547, 2021.
+[Wang et al., 2022] Heyuan Wang, Tengjiao Wang, Shun Li,
+  Jiayi Zheng, Shijie Guan, and Wei Chen. Adaptive long-
+  short pattern transformer for stock investment selection. In
+  IJCAI, pages 3970–3977, 2022.
+[Wei et al., 2022] Zikai Wei, Bo Dai, and Dahua Lin. Fac-
+  tor investing with a deep multi-factor model. In NeurIPS
+  Workshop on GLIndA, 2022.
+[Xu and Cohen, 2018] Yumo Xu and Shay B Cohen. Stock
+  movement prediction from tweets and historical prices. In
+  Proceedings of the 56th Annual Meeting of the Association
+  for Computational Linguistics (Volume 1: Long Papers),
+  pages 1970–1979, 2018.
+[Zhang et al., 2017] Liheng Zhang, Charu Aggarwal, and
+  Guo-Jun Qi. Stock price prediction via discovering multi-
+  frequency trading patterns. In Proceedings of the 23rd
+  ACM SIGKDD international conference on knowledge
+  discovery and data mining, pages 2141–2149, 2017.
+[Zhu, 2022] Brian Zhu. Regime-switching factor mod-
+  els with applications to portfolio selection and demand
+  estimation. https://economics.yale.edu/sites/default/files/
+  Forms/zhu brian senior essay econ 492.pdf, 2022. On-
+  line; accessed 10 January 2023.
+

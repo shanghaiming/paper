@@ -1,0 +1,1199 @@
+== PAGE 1 ==
+                                                            Cross–response in correlated financial markets: individual stocks
+                                                                              Shanshan Wang,∗ Rudi Schäfer,† and Thomas Guhr‡
+                                                            Fakultät für Physik, Universität Duisburg–Essen, Lotharstraße 1, 47048 Duisburg, Germany
+                                                                                                (Dated: October 21, 2018)
+                                                             Previous studies of the stock price response to trades focused on the dynamics of single stocks,
+                                                          i.e. they addressed the self–response. We empirically investigate the price response of one stock to
+                                                          the trades of other stocks in a correlated market, i.e. the cross–responses. How large is the impact
+                                                          of one stock on others and vice versa? — This impact of trades on the price change across stocks
+                                                          appears to be transient instead of permanent as we discuss from the viewpoint of market efficiency.
+                                                          Furthermore, we compare the self–responses on different scales and the self– and cross–responses
+                                                          on the same scale. We also find that the cross–correlation of the trade signs turns out to be a
+
+
+
+
+arXiv:1603.01580v2 [q-fin.ST] 25 Apr 2016
+                                                          short–memory process.
+
+                                                          PACS numbers: 89.65.Gh 89.75.Fb 05.10.Gg
+                                                          Keywords: econophysics, complex systems, statistical analysis
+
+
+                                                              I.   INTRODUCTION                                  current price, which would rule out any (statistical) arbi-
+                                                                                                                 trage opportunities. While this is in conflict with the very
+                                               The trading at stock exchanges is organized by the                different time scales on which, first, relevant new infor-
+                                            order book whose main purpose is to provide the same                 mation arrives and, second, the prices change, the model
+                                            information to all market participants. Although often               of Zero Intelligence Trading (ZIT) [23] simply assumes
+                                            ignored in the model building, it has a large impact on              randomly acting trader, but also arrives at a memoryless
+                                            the price dynamics and thus on the stylized facts as well            random walk.
+                                            as on more specific features [1–9]. The stock price is de-              In view of the EMH, there are two major approaches
+                                            termined via a continuous double auction [10], in which              to explain the impact of trades on the stock price change.
+                                            some traders submit market orders for immediate trans-               The first approach put forward by Lillo and Farmer
+                                            actions at the best available price, while other traders             (LF) [12], suggests that the price impact is permanent,
+                                            submit limit orders which specify an acceptable price for            but fluctuates with order size. The impact is caused
+                                            the trade. The limit orders are listed in the order book.            by an asymmetry in liquidity which is induced by the
+                                            Most of them do not immediately lead to trades. The buy              trade. The self–response exhibits a power–law relation
+                                            limit orders are referred to as bids and the sell limit orders       between order size and price change [12, 24–26]. In the
+                                            as asks. The best ask and best bid prices are the quotes.            second approach, Bouchaud, Gefen, Wyart and Potters
+                                            Market orders do not appear in the order book. When a                (BGPW) [11] argue that the price impact is transient,
+                                            market order is executed, the quote can either stay un-              but fixed with order size. The fact that the impact de-
+                                            changed or the best ask (bid) price can go up (down) in              cays with time is a result of price mean reversion. More-
+                                            the case of a buy (sell) market order. The prices change             over, they identify the relation between order size and
+                                            persistently as they are affected by the incoming market             price self–response as logarithmic [27]. Gerig [28] sug-
+                                            orders. To profit from the price difference between ask              gests that the two approaches LF and BGPW are equiv-
+                                            and bid, traders emit limit orders which leads to an anti–           alent and can be related by exchanging variables. He
+                                            persistence of prices. As a result of a detailed balance be-         also argues that the impact comes from the asymmetric
+                                            tween persistent and anti–persistent, i.e., between super–           liquidity rather than from the price mean reversion.
+                                            and subdiffusive behavior, the price on an intraday scale               There are numerous studies devoted to the price re-
+                                            moves diffusively like a random walk [11].                           sponse, but they all focus on one single stock, i.e. on
+                                               In recent years, a high auto–correlation of the order             the self–responses. Here, we go beyond this and investi-
+                                            flow was empirically found [11–14]. The splitting of or-             gate the role of correlations. We carry out a large–scale
+                                            ders over longer times introduces long memory of the                 empirical study of real–time trade data and find a non–
+                                            order flow [13] with remarkable persistence. Buy (sell)              vanishing price response across different stocks, i.e. for
+                                            orders are often followed by more buy (sell) orders. Fur-            the cross–responses. We shed light on the price impact
+                                            thermore, the relation between trades and price changes              from trades in different stocks by discussing the efficiency
+                                            has received considerable attention [2, 4, 11, 15–21]. The           of the financial market. We thereby present a first com-
+                                            Efficient Market Hypothesis (EMH) [22] states that all               plete view of the response in the market as a whole and
+                                            available information is processed and encoded in the                identify several structural characteristics.
+                                                                                                                    The paper is organized as follows. In Sect. II, we
+                                                                                                                 present our data set of stocks, provide some basic def-
+                                            ∗ shanshan.wang@uni-due.de                                           initions, and introduce two possible time scales for the
+                                            † rudi.schaefer@uni-due.de
+                                                                                                                 data analysis. We also test the accuracy of the trade
+                                            ‡ thomas.guhr@uni-due.de
+                                                                                                                 sign classification. In Sect. III, we show the empirical
+== PAGE 2 ==
+                                                                                                                          2
+
+results, which demonstrate the existence of trade sign           We only consider the common trading days in which
+cross–correlations and price cross–response, and we also      the trading of stocks i and j took place, because the
+compare two possible definitions of the response func-        trades of one stock i in one day would not impact the
+tions, in– or excluding the zero trade signs. In Sect. IV,    intraday price of another stock j without any trade in
+we present the market response structures and discuss the     that day, and vice versa.
+trade impact on the prices in detail, especially from the
+viewpoint of market efficiency. In Sect. V, we compare
+the self–responses based on the two different time scales,               B.   Physical versus trading time
+and we also compare the self– and cross–responses. We
+give our conclusions in Sect. VI.                                While studies on the self–responses employ trading
+                                                              time as time axis, this is not useful when studying the re-
+                                                              sponse across different stocks, because each stock has its
+      II.   DATA DESCRIPTION AND TIME                         own trading time. Hence, to study the cross–responses,
+                 CONVENTION                                   we better use the real, physical time. We project the
+                                                              data set to a discrete time axis. The quote data and the
+   In Sect. II A, we present the data set that we use in      trade data of each stock are in two separate files with
+our analysis. In Sect. II B we discuss the proper choice      a time–stamp accuracy of one second. However, more
+of time convention. In Sect. II C, we test the accuracy of    than one quote or trade may be recorded in the same
+our trade sign classification.                                second. Due to the one–second accuracy of the time–
+                                                              stamps, it is not possible to match each trade with the
+                                                              directly preceding quote. Hence, we cannot determine
+                      A.   Data set                           the trade sign by comparing the traded price and the
+                                                              preceding midpoint price. This latter definition of the
+                                                              trade sign was employed by Lee and Ready [29]. Instead,
+   Our study is based on the data from NASDAQ stock           we here define the trade signs similarly to the tick rule of
+market in the year 2008. NASDAQ is a purely electronic
+                                                              Holthausen, Leftwich and Mayers [30]. They define the
+stock exchange, whose Trades and Quotes (TAQ) data            trade as buyer–initiated (seller–initiated) if the trade is
+set contains the time, price and volume. This informa-
+                                                              carried out at a price above (below) the prior price. Zero
+tion is not only given for the trades with all successive     tick trades are not classified in general. The tick rule
+transactions, but also for the quotes with all successive
+                                                              has an accuracy of 52.8% [30]. For our study, we further
+best buy and sell limit orders.                               develop this method: as our data has a one–second accu-
+   To investigate the response across different stocks in     racy in time, we consider the consecutive time intervals
+Sect. III, we select six companies from three different       of length one second. Let t label such an interval and
+economic sectors traded in the NASDAQ stock market            let N (t) be the number of trades in that interval. The
+in 2008. The stocks we analyzed are listed in Table I         individual trades carried out in this interval are num-
+together with their acronyms and the corresponding eco-       bered n = 1, . . . , N (t) and the corresponding prices are
+nomic sectors.                                                S(t; n). We define the sign of the price change between
+   When studying the market response in Sect. IV, we          consecutive trades as
+select the first ten stocks with the largest average market               
+capitalization in each economic sector of the S&P 500
+                                                                                                         
+                                                                           sgn S(t; n) − S(t; n − 1) ,
+                                                                          
+index in 2008, except for the telecommunications services       ε(t; n) =                      if S(t; n) 6= S(t; n − 1),(1)
+where only nine stocks were available in that year. We                    
+                                                                           ε(t; n − 1) ,      otherwise.
+recall that the market capitalization is the trade price
+multiplied with the traded volume, and the average is         If two consecutive trades of the same trading direction
+performed over every trade during the year 2008. The          together did not exhaust all the available volume at the
+selected 99 stocks are listed in App. A.                      best quote, the prices of both trades would be the same.
+                                                              Thus, we set the trade sign equal to the previous trade
+                                                              sign in this case. If there is more than one trade in the
+             TABLE I. Company information                     interval denoted t, we average the corresponding trade
+                                                              signs,
+  Company             Symbol Sector
+                                                                                            !
+  Apple Inc.          AAPL Information technology                                N (t)
+                                                                          sgn P ε(t; n)
+  Microsoft Corp.     MSFT Information technology                                               ,    if N (t) > 0 ,
+                                                                  ε(t) =          n=1                               (2)
+  Goldman Sachs Group GS     Financials                                  
+                                                                            0                   ,    if N (t) = 0 ,
+                                                                         
+  JPMorgan Chase      JPM    Financials
+  Exxon Mobil Corp.   XOM Energy                              which formally also includes the case N (t) = 1. Conse-
+  Chevron Corp.       CVX    Energy                           quently ε(t) = +1 implies that the majority of trades in
+                                                              second t was triggered by a market order to buy, and a
+== PAGE 3 ==
+                                                                                                                                3
+
+
+                   2   (a)                                                                                empirical
+                                                                                                          theoretical
+                   1
+
+
+         ε(t;n)
+                   0
+                  -1
+                  -2
+                   2   (b)
+                   1
+                   0
+         ε(t)
+                  -1
+                  -2                                                                             empirical, Eq. (2)
+                                                                                                 empirical, Eq. (3)
+                   2   (c)                                                                       theoretical, Eq. (2)
+                   1
+                   0
+         ε(t)
+                  -1
+                  -2
+                  10:30:00   10:30:10       10:30:20       10:30:30             10:30:40       10:30:50           10:31:00
+                                                                t/s
+
+FIG. 1. Comparison of different classifications for empirical and theoretical trade signs versus the physical time for AAPL
+during one minute. (a) Sign comparison of every trade for AAPL on January 7th, 2008. (b) Sign comparisons of every second
+for AAPL on January 7th, 2008 with the worst accuracy difference of 5% out of six samples. (c) The sign comparisons of every
+second for AAPL on June 2nd, 2008. It shows a typical accuracy difference of 2%.
+
+
+
+value ε(t) = −1 indicates a majority of sell market orders.           sell) of the executed limited orders are referred to as the
+We have ε(t) = 0, whenever trading did not take place in              empirical trade signs, while the trade signs achieved by
+the time interval t or if there was a balance of buy and sell         comparing the prices between consecutive trades, as in
+market orders, i.e. if the argument of the sign function              Eq. (1), are referred to as the theoretical trade signs. Al-
+vanishes, sgn(0) = 0. In order to avoid overnight effects             though the TotalView–ITCH data set indirectly provides
+and any artifacts at the opening and closing of the mar-              the empirical trade signs, it does not give the informa-
+ket, we consider only trades of the same day from 9:40:00             tion of the best quote and the trade as conveniently as
+to 15:50:00 New York local time.                                      the TAQ data set. Thus, we only use the TotalView–
+                                                                      ITCH data set for testing the accuracy of the trade sign
+                                                                      classification.
+                                                                         In the TotalView–ITCH data set, the executed or-
+    C.    Accuracy of the trade sign classification                   ders can be classified as non–displayed orders and dis-
+                                                                      played limit orders in the order book. The executed
+   We test the accuracy of the trade sign classification              non–displayed orders correspond to the hidden trades
+with the intraday data of AAPL, GS and XOM from                       that we cannot use in our study for testing the accu-
+NASDAQ stock market by analyzing the TotalView–                       racy of the trade sign classification. The executed limit
+ITCH data set [31], which provides the information in-                orders correspond to the trades identified as buyer– or
+cluding buy or sell type, order price, and order volume               seller–initiated. We refer to these trades as to the identi-
+for each limit order with a unique order ID on the scale              fied trades. With these identified trades, we compare the
+of milliseconds. With this data set, we can identify the              theoretical trade signs ε(t; n) with the empirical ones to
+trade directions (buy or sell) of the market orders, which            test the accuracy. For a given trade, we count the num-
+show opposite trade directions to the limit orders exe-               ber of matches, i.e. the number of cases in which the
+cuted simultaneously. For example, an executed sell limit             empirical and theoretical signs are the same. Thus, the
+order corresponds to a buyer–initiated market order. The              accuracy of the trade sign classification for a given trade
+executed prices and volumes of the market orders can                  is defined as the number of matches divided by the total
+be obtained as well according to the information of the               number of identified trades.
+executed limited orders. Here, we regard an execution                    We randomly select two trading days for each stock
+of one limit order as a transaction accompanied with a                in 2008. Due to high–frequency trading, there are more
+market order in chronological order. Therefore, the trade             than 10000 trades for each stock executed in each trading
+signs of the market orders inferred from the types (buy or            day. As shown in Table II, the average accuracy of sign
+== PAGE 4 ==
+                                                                                                                                   4
+
+
+                                          TABLE II. Accuracy of trade sign classification
+   Stock                                          AAPL     AAPL        GS       GS     XOM      XOM                  six samples
+   Date                                         20080107 20080602 20081007 20081210 20080211 20080804                 (average)
+   For consecutive trades a
+   Number of identified limit orders              745020      407843      150532      199224       544451   596882
+   Number of identified trades                    120287       52691       19942       17902        38455    59580
+   Number of matches                              103635       47748       16668       15454        30478    49921
+   Accuracy of the classification                   0.86        0.91        0.84        0.86         0.79     0.84      0.85
+
+   For trades with the stamp of one second a b
+   Total number of identified trade signs     17115            12180         8283           6853     8782     9590
+   Number of matches for Eq. (2)              13956            10636         6801           5784     6516     7777
+   Accuracy of the classification for Eq. (2)  0.82             0.87         0.82           0.84     0.74     0.81      0.82
+   Number of matches for Eq. (3)              13256            10302         6715           5690     6446     7603
+   Accuracy of the classification for Eq. (3)  0.77             0.85         0.81           0.83     0.73     0.79      0.80
+
+   Total number of ε(t) = 0 found empirically a
+   Using Eq. (2)                                6000           10515       14218       15512        13719    12866     12138
+   Using Eq. (3)                                5343           10186       14051       15426        13571    12731     11885
+a The trading time in each day is set to 9:40:00 to 15:50:00 New York local time (total 22200 seconds).
+b The case that ε(t) = 0 occurs simultaneously in three kinds of trade signs is excluded.
+
+
+
+
+classification is equal to 85% for six tested samples. Fig. 1          trading time. For each tested stock, there are more than
+(a) compares the two kinds of trade signs for AAPL dur-                6000 seconds of identified trading time as shown in Ta-
+ing one minute at Jan. 7th, 2008. The theoretical trade                ble II. That means there are more than 6000 identified
+signs nicely match with the empirical ones.                            trade signs for each tested stock, since every second has a
+   Furthermore, we test the trade sign ε(t) of every sec-              trade sign. For each second, we compare the theoretical
+ond, defined as the sign of the number imbalance of                    trade sign with the empirical one. Again, we count the
+trades in one second as in Eq. (2). We use this definition             number of matches. Thus, the accuracy of the trade sign
+to calculate our theoretical trade sign in every second.               classification for every second is defined as the number
+For the empirical trade sign in every second, we evaluate              of matches divided by the total number of the identified
+the aggregated trade sign in two ways. We once more use                trade signs.
+Eq. (2) and also employ the sign of the volume imbalance                  When the theoretical trade signs are compared with
+of trades [18, 25, 26], as given by                                    the empirical trade signs aggregated according to Eq. (2),
+           
+                    N (t)
+                                      !                                the average accuracy of six tested samples in Table II is
+           
+            sgn P ε(t; n)v(t; n) , if N (t) > 0 ,                     82%. When the theoretical trade signs are compared with
+   ε(t) =           n=1                                   (3)          the empirical ones aggregated according to Eq. (3), the
+                                                                       average accuracy is 80%. These two scenarios have an
+           
+             0                           , if N (t) = 0 ,
+           
+                                                                       accuracy difference of 2% only. That means the theoret-
+where v(t; n) is the trading volume of n–th trade in sec-              ical trade signs defined by Eq. (2) have a high number of
+ond t. If the volume imbalance, i.e. the argument of                   matches with the empirical trade signs aggregated either
+the sign function, is a positive (negative) value, then                according to Eq. (2) or to Eq. (3). Moreover, the different
+ε(t) = +1 (−1) implies buyer (seller)–initiated market                 ways of aggregating trade signs do not strongly influence
+orders in t. If it is equal to zero, ε(t) = 0 indicates a              the accuracy of the trade sign classification. Figs. 1 (b)
+volume balance of buy and sell market orders. Moreover,                and (c) show the comparisons of three kinds of trade signs
+ε(t) = 0 also means that there was not any trade in t.                 for AAPL on the scale of one second. Compared to the
+   The total trading time in each trading day is 22200                 other five samples, AAPL at January 7th, 2008 in (b)
+seconds. In case that the accuracy of the sign classifi-               shows the worst accuracy difference of 5%. However, the
+cation is influenced by an excess of zero trade signs, the             matches for three kinds of trade signs still can be found
+trading times in which ε(t) = 0 simultaneously occurs in               most of the time. As a typical example, AAPL at June
+the three kinds of trade sign classification are excluded.             2nd, 2008 in (c) shows the general case with the accuracy
+Thus, the remanent trading time is used to test the ac-                difference of 2%, where the theoretical trade signs match
+curacy of the classification of the trade signs ε(t). We               with the two kinds of aggregated empirical trade signs
+refer to this remanent trading time as to the identified               rather well.
+== PAGE 5 ==
+                                                                                                                              5
+
+
+                       TABLE III. Fit parameters and normalized χ2ij for the trade sign cross–correlators.
+
+                                                                       (0)
+              sign         stock i    stock j           ϑij           τij [ s ]           γij           χ2ij (×10−6 )
+           correlators                            inc. 0 exc. 0    inc. 0 exc. 0    inc. 0 exc. 0      inc. 0 exc. 0
+                           AAPL       MSFT         0.46     0.05    0.05    3.46     1.00     1.35      0.23    1.52
+                           MSFT       AAPL         0.04     0.07    2.34    2.34     1.15     1.15      0.10    0.27
+                           XOM        CVX          0.61     0.67    0.06    0.21     1.04     1.16      0.07    0.52
+             cross         GS         JPM          0.45     0.48    0.07    0.13     1.00     1.00      0.04    0.18
+                           AAPL       GS           0.46     0.28    0.03    0.14     1.00     0.91      0.11    0.99
+                           GS         AAPL         0.49     0.49    0.06    0.10     1.00     1.00      0.05    0.13
+                           GS         XOM          0.61     0.73    0.04    0.08     1.04     1.10      0.04    0.20
+                           XOM        AAPL         0.76     0.29    0.05    0.34     1.09     1.42      0.12    0.18
+                           AAPL       AAPL         0.60     0.96    0.21    0.21     1.27     1.27      0.18    0.50
+              self         GS         GS           0.54     0.71    0.12    0.25     1.17     1.18      0.04    0.44
+                           XOM        XOM          0.54     0.89    0.17    0.23     1.12     1.14      0.09    0.49
+
+
+    III.   CROSS–RESPONSES FOR PAIRS OF                            normalization: The total number of events that deter-
+                   STOCKS                                          mines the normalization constant for the average is larger
+                                                                   when including the events with εj (t) = 0, although they
+   To study the mutual dependences between stocks,                 yield contributions ri (t, τ )εj (t) = 0. We further discuss
+we consider pairs of two different stocks. We intro-               this issue in Sect. III C. Here, we begin with present-
+duce the cross–response function as well as a trade sign           ing our empirical results for different stock pairs (i, j) in
+cross–correlator for such stock pairs in Sect. III A and           Figs. 2 and 3 versus the time lag, for in– and excluding
+Sect. III B, respectively. It turns out that the in– or ex-        trade signs εj (t) = 0, respectively. In all cases, an in-
+clusion of the trade signs ε(t) = 0 make a difference. We          crease to a maximum is followed by a decrease, i.e. the
+compare these two possible definitions in Sect. III C. In          trend in the cross–response is eventually reversed.
+the sequel, all quantities referring to a particular stock            This trend does not depend on whether or not the pairs
+carry its index i, quantities referring to a pair carry two        are in the same economic sector or extend over two sec-
+such indices. We consider eight pairs of stocks listed in          tors. The stocks face similar systematic risks, leading
+Table I, four within the same economic sector, four across         to stronger cross–response in the same sector than across
+different economic sectors.                                        different sectors. However, strong cross–responses for the
+                                                                   stock pairs from different sectors also exist, e.g. for (GS,
+                                                                   AAPL). Apart from reasons specific for the stock pair
+             A.      Cross–response functions                      considered, this might also be related to how investors
+                                                                   assemble their portfolios. To disperse the investment
+  To measure how a buy or sell order of stock with index           risks, the portfolios often comprise stocks from differ-
+j at time t influences the prices of the stock i at a later        ent sectors since they are exposed to different economic
+time t + τ , we introduce the cross–response function. We          risks and are less correlated than stocks within the same
+employ the logarithmic price differences or log–returns            sector. When investors buy or sell the stocks in their
+for stock i and time lag τ , defined via the midpoint prices       portfolios gradually, it may produce cross–responses and
+mi (t),                                                            sign cross–correlations in different stocks. We measure
+                                                                   the strength of the sign cross–correlation in Sect. III B.
+                                                 mi (t + τ )          The price reversion is also independent of in– or ex-
+ ri (t, τ ) = log mi (t+τ )−log mi (t) = log                 (4)
+                                                  mi (t)           cluding zero trade signs εj (t) = 0. The cross–response
+                                                                   including εj (t) = 0 measures the remanent price impact
+at a given time t, keeping in mind the one–second ac-              of market orders of stock j taking into account the cases
+curacy. To acquire statistical significance, the cross–            in which trading did not occur, while the cross–response
+response function is the time average                              excluding εj (t) = 0 purely measures the price impact of
+                           D              E                        market orders ignoring the lack of trading. The difference
+               Rij (τ ) = ri (t, τ )εj (t)          (5)            of both cross–response functions is mainly in the overall
+                                             t
+                                                                   amplitude, but the general trends for each stock pair are
+of the product of time–lagged returns and trade signs for          quite similar. More details will be given in Sect. III C.
+stocks i and j, respectively. Two definitions are possible            As we quantify the price impact to every second, the
+and meaningful: one can in– or exclude the trade signs             non–zero value of Rij (1) represents the one–second im-
+εj (t) = 0. This does make a difference as it affects the          pact of trades between different stocks. It is rather differ-
+== PAGE 6 ==
+                                                                                                                                                                     6
+
+
+
+                                -5                                                                                           -5
+                          ×10                                                                                          ×10
+                     6                                                                                         10
+                    5.5
+                                                                                                                  9
+                     5
+                    4.5                                                                                           8
+                     4
+         Rij (τ )
+                                                                                                                  7
+                    3.5
+                     3                                                                                            6
+                    2.5                                                                                           5
+                     2
+                                                                                         i=AAPL, j=GS             4
+                    1.5                            i=AAPL, j=MSFT
+                                                                                         i=GS,   j=AAPL                                      i=AAPL, j=AAPL
+                     -1                            i=MSFT, j=AAPL                                                 -1
+                10                                                                       i=GS,   j=XOM       10                              i=GS,   j=GS
+                                                   i=XOM, j=CVX
+                                                                                         i=XOM, j=AAPL                                       i=XOM, j=XOM
+                                                   i=GS,   j=JPM
+                10 -2                                                                                        10 -2
+
+                10 -3                                                                                        10 -3
+
+     Θij (τ )   10 -4                                                                                        10 -4
+
+                10 -5                                                                                        10 -5
+
+                10 -6                                                                                        10 -6
+
+                10 -7                                                                                         10 -7
+                    10 0             10 1            10 2           10 0   10 1            10 2           10 3 10 0               10 1          10 2          10 3
+                                            τ /s                                  τ /s                                                   τ /s
+
+FIG. 2. Cross–response functions Rij (τ ) including εj (t) = 0 in 2008 versus time lag τ on a logarithmic scale (top panels).
+Corresponding trade sign cross–correlators Θij (τ ) for different stock pairs on a doubly logarithmic scale, fit as dotted lines
+(bottom panels). The stock pairs in the first column of panels are from the same economic sectors, and in second column of
+panels are from the different economic sectors. The third column of panels are the self–responses and sign self–correlators to
+be compared with cross–responses and sign cross–correlators.
+
+
+
+
+                                -5                                                                                           -4
+                          ×10                                                                                          ×10
+                    12                                                                                        2.4
+                    11                                                                                        2.2
+                    10
+                                                                                                                  2
+                     9
+                     8                                                                                        1.8
+
+         Rij (τ )    7                                                                                        1.6
+                     6                                                                                        1.4
+                     5
+                                                                                                              1.2
+                     4
+                     3                         i=AAPL, j=MSFT                        i=AAPL, j=GS                 1
+                                               i=MSFT, j=AAPL                        i=GS,   j=AAPL                                       i=AAPL, j=AAPL
+                     0                                                                                            0                       i=GS,   j=GS
+                10                             i=XOM, j=CVX                          i=GS,   j=XOM           10
+                                               i=GS,   j=JPM                         i=XOM, j=AAPL                                        i=XOM, j=XOM
+                10 -1                                                                                        10 -1
+
+                10 -2                                                                                        10 -2
+
+    Θij (τ )    10 -3                                                                                        10 -3
+
+                10 -4                                                                                        10 -4
+
+                10 -5                                                                                        10 -5
+
+                10 -6                                                                                        10 -6
+                    10 0             10 1           10 2            10 0   10 1           10 2        10 3       10 0             10 1          10 2          10 3
+                                            τ /s                                  τ /s                                                   τ /s
+
+FIG. 3. Cross–response functions Rij (τ ) excluding εj (t) = 0 in 2008 versus time lag τ on a logarithmic scale (top panels).
+Corresponding trade sign cross–correlators Θij (τ ) for different stock pairs on a doubly logarithmic scale, fit as black dotted
+lines (bottom panels). The stock pairs in the first column of panels are from the same economic sectors, and in second column
+of panels are from the different economic sectors. The third column of panels are the self–responses and sign self–correlators
+to be compared with cross–responses and sign cross–correlators.
+== PAGE 7 ==
+                                                                                                                                 7
+
+ent from the instantaneous impact in single stocks, as the       of sign cross–correlation. For most of the stock pairs,
+trades in our study do not consume the volumes in order          the sign cross–correlation excluding εj (t) = 0 shows a
+book of impacted stocks to shift the price directly. The         longer decay period than that including εj (t) = 0. This
+price impact between stocks may come from other mech-            illustrates that the lack of trading or the balance of buy
+anisms, such as trading information transmission, which          and sell market orders accelerates the decay of the sign
+affects the limit orders of impacted stocks placed or can-       cross–correlations.
+celled, or even from market orders executed to move the             In addition, we notice the large fluctuations of the
+price indirectly. This is possible due to high frequency         trade sign cross–correlator at larger lags τ . They are
+trading, which leads to trades executed at the level of          partly due to the decrease of the response signal, but
+milliseconds. Thus, the time interval of one second is           also to the limited statistics. The larger the time lag τ ,
+sufficient to identify trading information transmission or       the larger is the overlap of the lag τ for different times
+other mechanisms.                                                t. When averaging the sign cross–correlation over every
+   It is worth mentioning that Figs. 2 and 3 show an in-         second t for large τ , the result has poor statistics.
+crease of the cross–response after decreasing back at large
+time lag τ close to 1000 s. We attribute this to the re-
+sponse noise, quantified in App. C.                                              C.   Including or excluding zero trade signs
+
+                                                                    Previous studies [11, 12, 14, 28] focus on the self–
+            B.   Trade sign cross–correlator                     response or sign self–correlation. The time used is event,
+                                                                 i.e. trade based rather than physical. Thus, only buy or
+  The existence of sign self–correlations is the main rea-       sell market orders are considered. In contrast, our study
+son that causes the self–response [11]. For pairs of stocks,     uses the physical time scale meaning that the price im-
+we introduce the trade sign cross–correlator                     pact is quantified to every second, no matter if there was
+                           D              E                      a trade or not. This is necessary or even inevitable as we
+              Θij (τ ) = εi (t + τ )εj (t)               (6)     study cross–responses for trades of different stocks which
+                                                  t              never are synchronous. For the self–response, one trade
+as a function of the time lag τ . To study how the in– or        can cause the change of the volumes in the order book,
+exclusion of εj (t) = 0 impacts cross–correlations of trade      leading to further price changes. However, for the cross–
+signs, we also distinguish the two possible definitions.         response, one trade from a different stock cannot change
+However, it turns out that the differences are negligible.       the price of the impacted stock directly by consuming the
+The sum of the product of trade signs between stocks             volumes of the limit orders in the order book. The ne-
+is not changed. What changes is the total number of              cessity to use the physical time forces us to deal with the
+trades, which enlarges or shrinks the average value. As          case ε(t) = 0 if a trade does not occur in a given second t.
+seen in Figs. 2 and 3, the inclusion of εj (t) = 0 actually      The corresponding information can be found in Table II,
+decreases the sign cross–correlation instead of increasing.
+   As we demonstrate in Figs. 2 and 3, there is a non–zero
+                                                                          0.75
+correlation across stocks. It turns out that the empirical
+                                                                                         ps (τ0 )
+result can be fitted well by the power law                                 0.7
+                                                                                         pd (τ0 )
+                                   ϑij                                    0.65
+
+             Θij (τ ) =                     γij /2 .     (7)
+                                     (0)                                   0.6
+                            1 + (τ /τij )2
+                                                                          0.55
+
+
+To estimate the error,      we use the normalized χ2ij ,  see    p(τ0 )    0.5
+
+App. B. The parameters for the best fit as well as the                    0.45
+χ2ij values for the analyzed eight stock pairs are listed in
+Table III. In contrast to the sign self–correlation on the                 0.4
+
+trading time scale [11, 12], most of the stock pair cross–                0.35
+correlations on the physical scale exhibit short mem-
+ory with exponents γij ≥ 1 rather than long memory.                        0.3
+
+
+The latter usually is defined as corresponding to expo-                   0.25
+                                                                                      10 -1                    10 0              10 1
+nents smaller than unity [32]. This indicates that the                                                 τ0 /s
+price change of one stock responding to the trades of an-
+other stock only persists for shorter times, and the cross–      FIG. 4. Probability densities ps (τ0 ) and pd (τ0 ) for the change
+response reverses at relatively small time lags τ . When         of trade sign versus the time τ0 without trading. The intraday
+comparing the sign cross–correlator including εj (t) = 0         data used stem from five successive trading days of AAPL
+with the one excluding εj (t) = 0, it is instructive to look     in 2008. The strong fluctuations at large τ0 are due to the
+                     (0)                                         limited statistics.
+at the parameter τij , which measures the decay period
+== PAGE 8 ==
+                                                                                                                                                                       8
+
+                           -5
+                     ×10                                                     0.08
+                7
+
+                6                                                                              for εj (t) = 0 included
+                                                                             0.06              for εj (t) = 0 excluded
+                5
+                                                                                               for εj (t) = 0
+                4
+                                                                                                                                FIG. 5.      The three cross–
+                                                                             0.04
+                                                                                                                                responses (left) and sign cross–
+                3
+                                                                                                                                correlators (right) of stock pair
+     Rij (τ )   2                                                 Θij (τ )   0.02                                               (MSFT, AAPL) versus the
+                1
+                                                                                                                                physical time lag τ : in– and ex-
+                                                                                 0                                              cluding ε(t) = 0 as well as only
+                0
+                                                                                                                                for ε(t) = 0. The shaded re-
+                -1                                                                                                              gions indicate the standard er-
+                                                                             -0.02
+                                                                                                                                ror bars.
+                -2
+
+                -3                                                           -0.04
+                 10
+                    0
+                                10
+                                     1
+                                                10
+                                                     2
+                                                         10
+                                                              3                  10 0   10 1           10 2              10 3
+
+                                         τ /s                                                  τ /s
+
+
+where, on average, more than half of the total physical                                       Furthermore, we emphasize that ε(t) = 0 can have
+time for each trading day features zero trade signs.                                       two reasons: either lack of trading or a balance of buy
+   There are two alternative choices for the sign at t with-                               and sell market orders in t. In the latter case, al-
+out any trade. One considers ε(t) = 0, such that the price                                 though the trade directions of buy and sell market or-
+at t is not affected. After averaging the response over the                                ders in one second annihilate each other, we cannot say
+entire time, the influence of lack of trades is included in                                whether or not the trading itself, regardless of the direc-
+the response function. If the average is restricted to the                                 tion, causes a cross–response of another stock. If so, does
+time in which trading took place, the influence of the lack                                it weaken or strengthen the total cross–response? — To
+of trading is obviously excluded. In our opinion, the fact                                 be more quantitative, we introduce the cross–responses
+                                                                                             (inc. 0)           (exc. 0)
+that there was a trade or not cannot be treated as neg-                                    Rij        (τ ) and Rij       (τ ) in– and excluding ε(t) = 0,
+ligible feature of the order book. It contains important                                   respectively. Here, we do not distinguish the two reasons
+information on the trading activity, reflecting that the                                   for ε(t) = 0. Hence, in a formal manner, the cross–
+traders have not traded for some time for whatever eco-                                    response for ε(t) = 0 can be quantified as the difference
+nomic or other reason. We thus believe that to only con-                                   of these two kinds of cross–responses,
+sider the impact from successive trades no matter how
+                                                                                                        (only 0)                (inc. 0)           (exc. 0)
+long the time without trading is between them on the                                                  Rij          (τ ) = Rij              (τ ) − Rij         (τ ).   (8)
+physical time scale might introduce a misleading bias.
+Many values of ε(t) = 0 can be found in each trading                                       Similarly, the sign cross–correlator for ε(t) = 0 is given
+day, see Table II.                                                                         by
+   Alternatively, we can simply keep the trade sign until
+                                                                                                        (only 0)                (inc. 0)           (exc. 0)
+the next trade occurs. This means that, if a trade did not                                            Θij          (τ ) = Θij              (τ ) − Θij         (τ ).   (9)
+take place, the last trade continues to have an unaltered
+impact until the next trade is executed. The correspond-                                   From this formal viewpoint, the cross–response for ε(t) =
+ing picture is reminiscent of Fig. 1 (a). This alternative                                 0, i.e. the price change conditioned on not trading or a
+choice implies that the trade sign which is fixed in the                                   balance of buy and sell market orders has a non–zero
+above way at second t is independent of the length of the                                  value. As shown in Fig. 5, both the cross–response and
+time τ0 without trading. Empirically, however, the trade                                   sign cross–correlator for ε(t) = 0 have negative values. In
+sign is more likely to reverse after a time τ0 without trad-                               other words, the existence of the events ε(t) = 0 weakens
+ing. We demonstrate this for AAPL in Fig. 4 which dis-                                     the cross–response that is purely due to trades. Eliminat-
+plays the probability densities ps (τ0 ) and pd (τ0 ) for find-                            ing the influence of ε(t) = 0 enlarges the impact of trades
+ing the same or different trade signs, respectively, after                                 on the price change. In this sense, the cross–response
+τ0 . By definition, we have ps (τ0 ) + pd (τ0 ) = 1. We notice                             including ε(t) = 0 is a conservative estimation of the
+that, as the time without trading evolves, the probabil-                                   price impact. Moreover, the price change conditioned on
+ity density for finding the same sign decreases, while the                                 ε(t) = 0 shows a similar trend as the price change con-
+probability for a sign reversal increases. Thus, the longer                                ditioned on trades, i.e., it reverses at large lags. This
+the time without trading, the weaker is the impact of                                      discussion strongly corroborates our procedure of analy-
+the last trade. Obviously, the second choice introduces                                    sis by including ε(t) = 0.
+a bias. Hence, we stick to the first choice, because the                                      In the sequel, to avoid cumbersome phrases, we will
+response including ε(t) = 0 properly relates to the decay-                                 use the term lack of trading for both reasons that give
+ing impact, while the response excluding ε(t) = 0 yields                                   ε(t) = 0, i.e., including the balance of buy and sell mar-
+results similar to using trading time instead of physical                                  ket orders. We will always show the responses in– and
+time.                                                                                      excluding zero trade signs for comparison.
+== PAGE 9 ==
+                                                                                                                             9
+
+              IV.    MARKET RESPONSE                              to sector. For example, utilities (U), financials (F) and
+                                                                  energy (E) respond to their own sectors with different
+   We explore the market response structures by normal-           strengths. Looking at the same sector, there is some
+ized response matrices with and without zero trade signs          difference as well. For example, the utilities (U) sector
+in Sect. IV A. Studying the market as a whole, we discuss         at τ = 60 has a weak response for εj (t) = 0 included,
+the market impact of trades in Sect. IV B before we turn          but a relatively strong response for εj (t) = 0 excluded.
+to the transient impact from the perspective of market            In other words, there is a price impact purely caused by
+efficiency in Sect. IV C.                                         the trades of the utilities (U), but due to the long non–
+                                                                  trading time for the stocks in utilities (U), the impact is
+                                                                  considerably weakened.
+            A.      Market response structure                        The market response structures in– and excluding zero
+                                                                  trade signs contain different information. The response
+   The cross–response functions and the trade sign cross–         including εj (t) = 0 greatly depends on the impacting
+correlators we considered up to now give us a kind of mi-         stocks j. In contrast, there is not an obvious difference
+croscopic information for stock pairs. It is equally impor-       of impacts purely caused by trades across the impacting
+tant to investigate how the trading of individual stocks          stocks j when excluding εj (t) = 0. Thus, lack of trading
+influences the market as a whole. In a first step, we tackle      appears as largely influencing the impact of trades when
+this question by introducing the market response as the           looking at the responses.
+matrix ρ(τ ) whose entries are the normalized response
+functions at a given time lag,
+                                                                               B.   Transient market impact
+                                 Rij (τ )
+                 ρij (τ ) =                    ,          (10)
+                              max (|Rij (τ )|)
+                                                                     For individual stocks, the price impact has a transient
+where the denominator is the maximum over all stock               and a permanent part [30]. When a trade is executed, the
+pairs (i, j) for fixed τ . The diagonal elements are the self–    price of an individual stock is impacted and reaches a new
+responses, and the off–diagonal elements are the cross–           instantaneous price. As time evolves, the instantaneous
+responses. The matrix ρ(τ ) is reminiscent of, but should         price tends to revert to the initial price, but forming a fi-
+not be mixed up with a matrix of Pearson correlation              nal price which may be different from the initial one. The
+coefficients. Importantly, the matrix of the market re-           difference between the instantaneous price and the final
+sponse is not symmetric, ρij (τ ) 6= ρji (τ ), as two different   price is referred to as the transient impact of a trade. The
+quantities, the returns and the trade signs, enter the defi-      transient impact can be attributed to the price mean re-
+nition Eq. (5). Furthermore, the market response reveals          version when the order size is fixed [11]. The price mean
+information about the time evolution.                             reversion can be regarded as a result of a game between
+   Our empirical analysis is depicted in Fig. 6 for a mar-        liquidity takers and liquidity providers. The liquidity
+ket with 99 stocks, see App. A. We show the 99 × 99               takers split their orders to conceal the trading informa-
+matrices of the market response for different time lags           tion, leading to a long–memory self–correlations in the
+τ = 1, 2, 60, 300, 1800, 7200 s in the year 2008. The di-         trade signs. Meanwhile, to keep their price at an ap-
+agonal strip is simply the self–response. In general, the         propriate position, the liquidity providers try to slowly
+price change of one stock is always affected by the trad-         mean revert the price. The difference between the final
+ing of all others, and vice versa. The stocks are ordered         price and the initial price is referred to as the permanent
+according to the economic sectors.                                impact of a trade. The permanent impact, which is due
+   Although the responses both for εj (t) = 0 in– and             to the asymmetric liquidity, can be identified through a
+excluded show similar trends of price reversion, they ex-         power–law between order size and price change [12, 24–
+hibit quite different market microstructures in each sec-         26, 28].
+ond as shown in Fig. 6. This is particularly noticeable              In our study, it is difficult to identify whether a per-
+when the stocks act as the impacting stocks j. As some            manent impact exists or not, but the price reversion with
+stocks yield stronger impacts than others, the matrix fea-        time lag in Figs. 2 and 3 as well as the evolution of the
+tures striking patterns of strips with the cross–responses        market response structure in Fig. 6 manifest the exis-
+including εj (t) = 0. They are associated with the cor-           tence of a transient impact between stocks. As stated in
+responding sectors. For example, the information tech-            Sect. III, the trade of one stock cannot lower the volume
+nology (IT) sector produces a visibly strong strip over           in the order book and thereby change the price of another
+almost all other sectors. This effect is quite stable over        stock directly. Thus, there must be other mechanisms to
+time. In contrast, strips cannot be found in the matrix           explain the transient impact between stocks.
+of the cross–responses excluding εj (t) = 0. The whole               Although we cannot fully support the following state-
+market displays a relatively homogeneous distribution of          ments by sufficient evidence, we wish to discuss some pos-
+the response across the impacting stocks.                         sible reasons for a transient impact. We thereby partly
+   Furthermore, for εj (t) = 0 either in– or excluded, it         transfer a line of reasoning put forward in the case of
+is worth mentioning that the responses vary from sector           self–responses [14] to our case of cross–responses. One
+== PAGE 10 ==
+                                                                                                                                                                                                                                                                                                  10
+
+                                                  τ =1s                                                                     τ =2s                                                                     τ =1s                                                                    τ =2s
+
+
+
+
+            TS CS E M F U IT CD HC I                                                TS CS E M F U IT CD HC I                                               TS CS E M F U IT CD HC I                                                     TS CS E M F U IT CD HC I
+  stock i                                                                 stock i                                                                stock i                                                                      stock i
+
+
+
+                                       I HC CD IT U       F M E CS TS                                          I HC CD IT U     F M E CS TS                                                I HC CD IT U       F M E CS TS                                          I HC CD IT U    F M E CS TS
+                                                 stock j                                                                   stock j                                                                   stock j                                                               stock j
+                                                  τ = 60 s                                                                 τ = 300 s                                                                  τ = 60 s                                                             τ = 300 s
+
+
+
+
+            TS CS E M F U IT CD HC I                                                TS CS E M F U IT CD HC I                                               TS CS E M F U IT CD HC I                                                     TS CS E M F U IT CD HC I
+  stock i                                                                 stock i                                                                stock i                                                                      stock i
+
+
+
+
+                                       I HC CD IT U       F M E CS TS                                          I HC CD IT U     F M E CS TS                                                I HC CD IT U       F M E CS TS                                          I HC CD IT U    F M E CS TS
+                                                 stock j                                                                   stock j                                                                   stock j                                                               stock j
+                                                 τ = 1800 s                                                            τ = 7200 s                                                                    τ = 1800 s                                                            τ = 7200 s
+
+
+
+
+            TS CS E M F U IT CD HC I                                                TS CS E M F U IT CD HC I                                               TS CS E M F U IT CD HC I                                                     TS CS E M F U IT CD HC I
+  stock i                                                                 stock i                                                                stock i                                                                      stock i
+
+
+
+
+                                       I HC CD IT U       F M E CS TS                                          I HC CD IT U     F M E CS TS                                                I HC CD IT U       F M E CS TS                                          I HC CD IT U    F M E CS TS
+                                                 stock j                                                                   stock j                                                                   stock j                                                               stock j
+
+                                 -1       -0.8     -0.6     -0.4   -0.2     0                                  0.2   0.4       0.6     0.8   1                                        -1      -0.8     -0.6     -0.4   -0.2      0                                 0.2   0.4      0.6   0.8   1
+
+
+
+
+FIG. 6. Matrices of market response with entries ρij (τ ) for i, j = 1, . . . , 99 at different time lags τ = 1, 2, 60, 300, 1800, 7200 s
+in the year 2008. The stocks pairs (i, j) belong to the sectors industrials (I), health care (HC), consumer discretionary (CD),
+information technology (IT), utilities (U), financials (F), materials (M), energy (E), consumer staples (CS), and telecommuni-
+cations services (TS). The responses in the first two columns of panels include εj (t) = 0, while in the last two columns εj (t) = 0
+is excluded.
+
+possible reason might be related to the order splitting.                                                                                         previous trading patterns, the price of those stocks will
+Suppose each stock has trade sign self–correlations, it                                                                                          be less impacted. Here, the traders act as distributors
+can happen that a sequence of positive trade signs, say,                                                                                         for the trading information regarding different stocks.
+in one stock partly overlaps on the physical time axis
+with a sequence of positive trade signs in the other stock.
+Such a situation can occur due to true economic corre-
+                                                                                                                                                                                                     C.       Restoring market efficiency
+lations which are then also reflected in the return time
+series, or it can be purely coincidental. In any case, a
+cross–correlation of trade signs may result and lead to a                                                                                           Importantly, the transient impact relates to the mar-
+cross–response of one stock to the trades of another stock.                                                                                      ket efficiency. According to the Efficient Market Hypoth-
+As the impact of trades in the self–responses is transient,                                                                                      esis (EMH) [22], the price encodes all available informa-
+the impact in cross–responses indirectly caused by sign                                                                                          tion, implying that arbitrage opportunities do not ex-
+self–correlations should be transient as well. Another                                                                                           ist. Thus, the response functions measuring the price
+possible reason might be rooted in the behavior of the                                                                                           changes caused by trades should be zero, either for one
+traders. The overreaction to a trading information, e.g.                                                                                         single stock or across different stocks. However, the
+herding behavior, prompts traders to extend their activ-                                                                                         empirical analysis already demonstrated non–zero self–
+ities to other stocks which they did not trade previously.                                                                                       response [11]. Likewise, non–zero cross–responses are
+This might also lead to price changes of those stocks.                                                                                           seen in Fig. 6. The market response is mainly positive up
+When the traders calm down and take up again their                                                                                               to time lags of about τ = 7200 s, while negative responses
+                                                                                                                                                 show up later. The existence of both, the empirical self–
+== PAGE 11 ==
+                                                                                                                                11
+
+
+               ×10 -5
+                                                                       price changes becomes statistically much more signifi-
+           8
+                                                                       cant. The doubly averaged response functions (11) are
+                                                                       displayed in Fig. 7. The price trend is caused by a small
+           7                                                           part of potentially informed traders: first R(τ ) increases,
+                                                                       then it decreases because of the reverting actions of the
+                                                                       alerted traders. The decay of the average response for the
+           6                                                           whole market takes longer time than for one stock pair.
+                                                                       This is partly a result of the noise reduction. Moreover
+   R(τ )   5
+                                                                       it might indicate that the whole market needs more time
+                                                                       to respond to all potential information than one individ-
+                                                                       ual stock. With time scales of about three hours, the
+           4                                                           restoration of efficiency for the whole market is a rather
+                                                                       slow process. When the market moves back to an efficient
+           3
+                                                                       state, the impact of trades between stocks vanishes. In
+                        for εj (t) = 0 excluded                        this sense, the impact is transient instead of permanent
+                        for εj (t) = 0 included                        both for the lack of trading in– and excluded in the anal-
+           2
+               0                1            2         3        4
+                                                                       ysis.
+            10             10           10        10       10
+                                                                          Generalizing the analysis of Ref. [11] for the individ-
+                                         τ /s
+                                                                       ual stocks, we evaluate the evidence for the presence of
+                                                                       informed trades across stocks by working out the proba-
+FIG. 7. Doubly averaged response functions R(τ ) in– and               bility distribution of the signed return
+excluding εj (t) = 0 for the whole market in 2008 versus time
+lag τ on a logarithmic scale. The error bars indicate the                                 uij (τ ) = ri (t, τ )εj (t)         (12)
+standard errors. For better comparison, the doubly average
+response function for εj (t) = 0 included and its error bars are       for the whole market in 2008, here without εj (t) = 0.
+scaled up by a factor of six.                                          The resluts are displayed in Fig. 8. The distribution of
+                                                                       positive and negative signed returns at τ = 30 s is asym-
+and cross–responses, might seem to be in conflict with                 metric, but can be symmetrized by a shift of ∆uij (τ ) =
+the EMH. However, the presence of informed trades is                   5×10−5. Nevertheless, for large signed returns, the asym-
+hardly detected for single stocks [11] and the impact                  metry prevails. The value of ∆uij (τ ) = 5 × 10−5 has to
+of trades on the price is more likely to be due to the                 be compared with a value of about R(30) ∼ 7 × 10−5
+trading costs. Although the transient impact of trades                 for the doubly averaged response function. As the cross–
+across stocks cannot be directly traced back to the liquid-            response is the average of the signed returns, the price
+ity costs, we are hesitating to attribute it to a violation of         impact can be related to at least two causes. We find
+the EMH. We recall that the liquidity costs, measured by               it plausible to carry over the line of reasoning for indi-
+the bid–ask spread, are the costs for making transactions              vidual stocks in Ref. [4] to our analysis across stocks: a
+without time delay [33, 34]. The trading costs include                 shift reveals the uninformed trades while an asymmetry
+the brokerage commission and the costs resulting from                  on longer scales hints at the presence of informed trades.
+the bid–ask spread, where the brokerage commission is
+fixed during the transaction.
+   Another possible explanation for the findings in Fig. 6                    V.   COMPARISONS OF SELF– AND
+is that market efficiency is violated on short time scales,                          CROSS–RESPONSES
+but always restored on longer time scales. As discussed
+in Ref. [11], the behavior of some traders will alert other               We now compare the self–responses and the sign
+traders. In this process, it is not important whether or               self–correlators for trading and physical time scales in
+not the trading is driven by valid information. The net ef-            Sect. V A as well as the self– and cross–responses and sign
+fect is that the alerted traders act similar to arbitrageurs           cross–correlators on the physical time scale in Sect. V B.
+reverting the price until a state compatible with the EMH
+is reached. This process takes some time. Clear evidence
+for this interpretation is provided by the following analy-             A.   Comparisons of self–responses on trading and
+sis. All information is incorporated into the market as a                             physical time scales
+whole, not only into the currently traded stocks, but also
+to the currently not traded ones. As argued in Sect. III,                 As seen in Table III, the sign self–correlators on the
+the cross–responses fluctuate at large time lags due to a              physical time scale exhibit short memory no matter
+noise effect. For the whole market, these fluctuations are             whether zero trade signs are in– or excluded. This is
+washed out by a self–averaging process amounting to                    very different from the sign self–correlators on the trad-
+                          R(τ ) = hhRij (τ )ij ii ,             (11)   ing time scale [11, 12] which have a long memory. The
+                                                                       difference originates from the time scales used. The trad-
+where i = j is excluded. Thus, the information about                   ing time scale regards one trade as a stamp, such that
+== PAGE 12 ==
+                                                                                                                                                                                                                                                      12
+
+
+                        0.12                  0                                                                                                         0.12                  0
+                                         10                                                                                                                              10
+                                                                                                uij (τ ) > 0                                                                                                 uij (τ ) − ∆uij (τ ) > 0
+                                              -1
+                                         10                                                     uij (τ ) < 0                                                            10 -1                                uij (τ ) − ∆uij (τ ) < 0
+                         0.1                                                                                                                             0.1
+                                              -2                                                                              !                     "                         -2
+                                         10                                                                                                                             10
+
+
+
+
+                                                                                                                             p uij (τ ) − ∆uij (τ )
+                        0.08                                                                                                                            0.08
+          !         "                    10 -3                                                                                                                          10
+                                                                                                                                                                              -3
+
+
+
+
+         p uij (τ )
+                        0.06                  -4                                                                                                        0.06
+                                         10                                                                                                                             10 -4
+
+                                              -5                                                                                                                              -5
+                                         10                                                                                                                             10
+                        0.04                                                                                                                            0.04
+
+                                              -6                                                                                                                              -6
+                                         10                                                                                                                             10
+                                                   0        0.002          0.004    0.006          0.008            0.01                                                           0        0.002          0.004    0.006       0.008        0.01
+                        0.02                                                                                                                            0.02
+
+
+
+                             0                                                                                                                               0
+                                  0     0.5             1              1.5          2              2.5           3                                                0     0.5             1              1.5          2            2.5              3
+                                                                 uij (τ )                                  ×10 -3                                                                      uij (τ ) − ∆uij (τ )                              ×10
+                                                                                                                                                                                                                                                 -3
+
+
+
+
+FIG. 8. Probability distribution of the signed returns uij (τ ) = ri (t, τ )εj (t) for the whole market in 2008, excluding εj (t) = 0,
+for τ = 30 s: unshifted (left) and shifted (right) by −∆uij (τ ) with ∆uij (30) = 5 × 10−5 . The distributions for negative
+arguments (dashed lines) are folded back to the positive regions. A logarithmic scale is used in the insets.
+
+                                                                                                                                                             0
+                        10 0                                                                                                                            10
+                                                               10 0                                                                                                                             10 0
+
+                        10 -1                                                                                                                           10 -1
+
+                                                                                                                             !                     "
+                        10 -2                                                                                                                           10 -2
+
+
+
+
+                                                                                                                            p uij (τ ) − ∆uij (τ )
+          !         "
+                                                                                                                                                        10 -3
+
+         p uij (τ )
+                        10 -3
+                                                               10 -5                                                                                                                           10 -5
+                                                                       0                  0.5                   1                                                                                      0                  0.5                1
+                                                                                                               -3
+                                                                                                         ×10                                                                                                                           ×10 -3
+                        10 -4                                                                                                                           10 -4
+                                                                                                  τ = 300 s                                                                                                                     τ = 300 s
+                                                                             τ = 120 s                                                                       -5                                              τ = 120 s
+                             -5                                                                                                                         10
+                        10
+                                                       τ = 15 s                                                                                                                        τ = 15 s
+                                      τ =1s                                                                                                                           τ =1s
+                        10
+                             -6                                                                                                                         10 -6
+
+
+
+                        10
+                             -7                                                                                                                         10 -7
+                                  0    0.005           0.01          0.015         0.02           0.025             0.03                                          0    0.005           0.01         0.015          0.02         0.025        0.03
+                                                                    uij (τ )                                                                                                           uij (τ ) − ∆uij (τ )
+
+
+FIG. 9. Probability distribution of signed return uij (τ ) for physical time scale, where both i and j are AAPL in 2008: unshifted
+(left) and shifted by −∆uij (τ ) (right). Here, ∆uij (τ ) = 5.15 × 10−5 with τ = 1, 15, 120, and 300 s, respectively. The negative
+parts of the distributions (dashed lines) are folded back to the positive regions. The insets are the amplified probability
+distributions near zero signed return.
+
+the trade sign only represents a buy or sell market or-                                                                    orders with the same trade direction in the time inter-
+der at each event stamp. The long memory of sign self–                                                                     val of one second, but magnifies the effect due to only
+correlations caused by fragmented orders is thus easily                                                                    one market order with the opposite direction in another
+captured even over several days. From the perspective                                                                      second. Hence, the long memory of sign self–correlations
+of intraday trading, however, the trading time scale loses                                                                 caused by fragmented orders is either suppressed within
+sight of the time between two successive trades, such that                                                                 the one–second interval or influenced by random trades in
+two events might have occurred within one second or sep-                                                                   other one–second intervals, leading to the short memory
+arated by several hours. It is thus difficult to estimate                                                                  of the sign self–correlators on the physical time scale.
+the price impact for intraday trading. To overcome this                                                                       The value of the self–response function for τ = 1 s,
+problem, the physical time scale quantifies the price im-                                                                  i.e. Rii (1), has to be interpreted differently on the two
+pact for a time interval of given length, e.g. one second.                                                                 time scales. On the trading time scale, Rii (1) reflects the
+The aggregated trade sign for this interval indicates an                                                                   instantaneous impact of one trade, since a market order
+imbalance of buy and sell market orders instead of an                                                                      might not only consume the volumes in the best quotes
+individual buy or sell market order. Therefore, it gives                                                                   but also the ones in the second or third best quotes to
+limited information on the influence of multiple market                                                                    shift the price instantaneously. The price impact is not
+== PAGE 13 ==
+                                                                                                                         13
+
+likely to come from the informed trades, it rather is due to    cellation of limit orders or even the execution of market
+the trading costs [11]. In other words, the instantaneous       orders. For the cross–response, on the other hand, trades
+impact is due to the liquidity costs on the trading time        of one stock that move the price of another stock do not
+scale. However, Rii (1) on the physical time scale is the       directly affect the volumes of the latter stock in the or-
+average impact of one second regardless of the number           der book. The impact across different stocks is likely
+of trades. This impact has two causes, the uninformed           to occur through the spread of information about the
+trades for all lags, e.g. liquidity costs, and the informed     trading that influences the traders’ actions. The impact
+trades for small lags, as shown in Fig. 9.                      due to consuming volumes is stronger than that due to
+   Figure 9 displays the probability distribution of signed     the information spread, as there also is competing infor-
+returns on the physical time scale with different time          mation, e.g. about other trades, or relevant incoming
+lags for AAPL in 2008, excluding the zero trade signs.          news. Thus, the self–responses is mostly stronger than
+The parts of the distributions for negative arguments are       the cross–responses, as shown in Figs. 2 and 3.
+folded back to the positive region. There is an overall            Connected to the self– and cross–responses, the sign
+shift of the distribution from the vertical axis correspond-    self– as well as cross–correlations have short memory. Re-
+ing to zero signed returns. For the different time lags, the    gardless of the effects due to effectively random trading,
+value of the shift are rather stable, and likely to stem from   the sign self–correlation can mainly be attributed to the
+the uninformed trades. When we shift the whole distri-          order splitting, just like the sign self–correlation on the
+butions by ∆uij (τ ) = 5.15×10−5 with τ =1, 15, 120, and        trading time scale. However, the sign cross–correlations
+300 s, respectively, and then fold the negative parts of the    may have multiple causes. One is the herding behavior.
+distributions back to the positive region, we still find a      Some traders follow others when deciding to buy or sell
+difference between the two parts of the distribution, es-       specific stocks, but they also trade other stocks related
+pecially for those with small lags. The asymmetric tail         by the same or opposite trading direction. This yields
+of the distribution reflecting the imbalance of the buy         cross–correlations of trade signs across stocks. Another
+and sell orders is related to the presence of the informed      possible cause might be the order splitting, as discussed
+trades. It is only visible for small time lags, but disap-      in Sect. IV B. Of course, the way how the portfolios are
+pears for larger ones, for example, the two parts of the        chosen might also be a reason, but we cannot support this
+distribution for τ = 300 s are indistinguishable. Hence         by empirical evidence in our study. Table IV provides a
+the price impact in this case only stems from the unin-         synopsis of the comparison just carried out.
+formed trades. The informed trades can be attributed to
+the insufficient liquidity on short time intervals. When
+the liquidity is restored by submitting more limit orders,                       VI.   CONCLUSIONS
+the informed trades disappear, but the remaining impact
+from the uninformed trades stays unchanged, indicating a           We extended the study of stock prices responses to
+possible coverage of the trading costs. Some sharp bends        trading from individual stocks, i.e. self–responses, to
+due to the shifting procedure can be seen for the distri-       a whole correlated market. We empirically investigated
+butions in the inset of Fig. 9 (right hand side) at very        the price responses to the trading of different stocks, i.e.
+small signed returns.                                           cross–responses, as functions of the time lag. The cross–
+                                                                response functions increase and then reverse back. Thus,
+                                                                the impact of the trades on the prices appears to be
+  B.   Comparisons of self– and cross–responses on              transient. Pictorially speaking, the market needs time
+              the physical time scale                           to react to the distortion of efficiency caused by the po-
+                                                                tentially informed traders. In this period of distortion,
+   On the physical time scale, the trade signs at time t        some traders, who might be interpreted as arbitrageurs,
+for both, the self– and cross–responses, are aggregated,        drive the price to a reversion and thereby help to restore
+which produce some similar features. Obviously, Rii (1)         market efficiency. The cross–response is clearly related to
+and Rij (1) both represent the impact of everything what        the trade sign cross–correlations. These cross–correlators
+happened in the first one second interval. Moreover, both       decay in a power–law fashion, revealing a short–memory
+the self– and cross–responses contain uninformed and in-        process with exponents larger than one for a stock pair.
+formed trades for all or small lags, respectively, as seen         In our analysis, we preferred using the physical time
+by comparing Fig. 8 with Fig. 9.                                instead of the trading time, as the trading of different
+   However, the impacting stock is also impacted in the         stocks is never synchronous. We discussed the differences
+self–response, but this is not so in the cross–response,        occurring due to the choice of time scale. We careful
+implying that there are different modes of impact. As           studied the accuracy of our trade sign classifications. In
+already discussed, for the self–response, the market or-        much detail, we also analyzed the effects due to including
+ders in one second move the price by removing volume            or excluding zero trade signs.
+of the limit orders from the order book. The therefore             We also looked at the market as a whole by setting up a
+insufficient liquidity on short time intervals will trigger     matrix, the market response, that collects the normalized
+actions by the traders, affecting the placement or can-         information of all response functions. Several character-
+== PAGE 14 ==
+                                                                                                                           14
+
+
+                                  TABLE IV. The comparisons of self– and cross–responses
+
+       Responses              self–response                self–response                  cross–response
+       Scales                 on trading time scale        on physical time scale         on physical time scale
+
+       ε(t)                   the trade sign of t-th       the aggregated trade sign at   the aggregated trade sign at
+                              trade                        time t                         time t
+
+       Rii (1) or Rij (1)     the instantaneous impact     the one–second impact          the one–second impact
+
+       Causes of impact       uninformed trades            uniformed trades and in-       uniformed trades and in-
+                                                           formed trades                  formed trades
+
+       modes of impact        change the trade price by    change the trade price both    change the trade price by in-
+                              consuming the volumes in     by directly consuming the      directly affecting the place-
+                              the order book directly      volumes in the order book      ment or cancellation of limit
+                                                           and indirectly affecting the   orders or even the execution
+                                                           placement or cancellation of   of market orders
+                                                           limit orders
+
+       Properties of sign     long memory for sign         short memory for sign self–    short memory for         sign
+       correlations           self–correlation             correlation                    cross–correlation
+
+       Causes of sign cor-    main: order splitting        main: order splitting          probable: order splitting,
+       relations                                                                          herding behavior, portfolios
+
+
+istic features show up which are visible in patterns hav-            AUTHOR CONTRIBUTION STATEMENT
+ing a remarkable stability in time. The market response
+provides quantitative information about how the trading            T.G. proposed the research. R.S. and S.W. developed
+of one stock affects the prices of other stocks, and how         the method of analysis, which S.W. carried out. All au-
+its own price is influenced by the trades of other stocks        thors contributed equally to analyzing the results, the
+stocks.                                                          paper was written by S.W. and T.G.
+   Finally, we compared the self– and the cross–responses.
+The self–responses on the trading and on the physical
+                                                                  Appendix A: Stocks used for analyzing the market
+time scales show quite different characteristics. We found                           response
+that the self–response on the physical scale originates
+from uniformed as well as from informed trades, in con-
+trast to self–response on the trading scale that is only due        We evaluated the market response for the 99 stocks
+to uninformed trades as already shown in previous stud-          from ten economic sectors: industrials (I), health care
+ies. Moreover, on the physical time scale, the difference of     (HC), consumer discretionary (CD), information technol-
+the self– and cross–responses is striking, especially when       ogy (IT), utilities (U), financials (F), materials (M), en-
+considering different kinds of impact.                           ergy (E), consumer staples (CS), and telecommunications
+                                                                 services (TS) as listed in Table V. The acronym AMC in
+                                                                 Table V stands for averaged market capitalization.
+
+
+                                                                               Appendix B: Error estimation
+              ACKNOWLEDGEMENTS
+                                                                    Suppose we measured or numerically simulated a set
+                                                                 of M data points y(τm ) at positions τm , m = 1, . . . , M .
+   We thank D. Chetalova, T.A. Schmitt, Y. Stepanov,             We want to describe the data with a function f (τ ) by
+and D. Wagner for fruitful discussions. We are grateful          fitting its MP parameters. To assess the quality of the
+to the referee of an earlier version of the paper for several    fit, the normalized χ2 [35]
+helpful comments. One of us (S.W.) acknowledges finan-                                 M
+cial support from the China Scholarship Council (grant                            1   X                   2
+                                                                        χ2 =              f (τm ) − y(τm ) ,              (B1)
+no. 201306890014).                                                             M − MP m=1
+== PAGE 15 ==
+                                                                                                          15
+
+
+                     TABLE V. Information of 99 stocks from ten economic sectors
+
+
+Industrials (I)                                           Financials (F)
+Symbol Company                              AMC          Symbol Company                          AMC
+FLR      Fluor Corp. (New)                 14414.4       CME CME Group Inc.                     49222.9
+LMT      Lockheed Martin Corp.             12857.8       GS      Goldman Sachs Group            21524.3
+FLS      Flowserve Corporation             12670.2       ICE     Intercontinental Exchange Inc. 14615.3
+PCP      Precision Castparts               12447.0       AVB     AvalonBay Communities          11081.6
+LLL      L-3 Communications Holdings       12170.8       BEN     Franklin Resources             10966.2
+UNP      Union Pacific                     11920.9       BXP     Boston Properties              10893.0
+BNI      Burlington Northern Santa Fe C    11837.5       SPG     Simon Property Group Inc       10862.4
+FDX      FedEx Corporation                 10574.7       VNO     Vornado Realty Trust           10802.3
+GWW Grainger (W.W.) Inc.                   10416.8       PSA     Public Storage                 10147.9
+GD       General Dynamics                  10035.6       MTB M&T Bank Corp.                      9920.2
+
+Health Care (HC)                                         Materials (M)
+Symbol Company                              AMC          Symbol Company                         AMC
+ISRG Intuitive Surgical Inc.               31355.9       X      United States Steel Corp.      15937.7
+BCR     Bard (C.R.) Inc.                   11362.7       MON Monsanto Co.                      14662.6
+BDX     Becton Dickinson                   10298.4       CF     CF Industries Holdings Inc     14075.5
+GENZ Genzyme Corp.                          9728.8       FCX    Freeport-McMoran Cp & Gld      11735.7
+JNJ     Johnson & Johnson                   9682.6       APD    Air Products & Chemicals       10246.4
+LH      Laboratory Corp. of America Holding 9035.7       PX     Praxair Inc.                   10234.5
+ESRX Express Scripts                        8864.6       VMC Vulcan Materials                   8700.4
+CELG Celgene Corp.                          8783.1       ROH    Rohm & Haas                     8527.1
+ZMH     Zimmer Holdings                     8681.7       NUE    Nucor Corp.                     7997.4
+AMGN Amgen                                  8543.0       PPG    PPG Industries                  7336.7
+
+Consumer Discretionary (CD)                              Energy (E)
+Symbol Company                              AMC          Symbol Company                         AMC
+WPO Washington Post                        61856.1       RIG    Transocean Inc. (New)          16409.5
+AZO    AutoZone Inc.                       14463.7       APA    Apache Corp.                   13981.9
+SHLD Sears Holdings Corporation            11759.2       EOG    EOG Resources                  13095.0
+WYNN Wynn Resorts Ltd.                     11507.9       DVN    Devon Energy Corp.             12499.7
+AMZN Amazon Corp.                          10939.2       HES    Hess Corporation               11990.4
+WHR Whirlpool Corp.                         9501.9       XOM Exxon Mobil Corp.                 11460.3
+VFC    V.F. Corp.                           9051.2       SLB    Schlumberger Ltd.              11241.1
+APOL Apollo Group                           8495.8       CVX    Chevron Corp.                  11100.0
+NKE    NIKE Inc.                            8149.5       COP    ConocoPhillips                 10215.3
+MCD McDonald’s Corp.                        8025.6       OXY    Occidental Petroleum            9758.4
+
+Information Technology (IT)                              Consumer Staples (CS)
+Symbol Company                              AMC          Symbol Company                         AMC
+GOOG Google Inc.                           62971.6       BUD    Anheuser-Busch                  9780.6
+MA      Mastercard Inc.                    28287.8       PG     Procter & Gamble                9711.5
+AAPL Apple Inc.                            22104.1       CL     Colgate-Palmolive               9549.2
+IBM     International Bus. Machines        15424.9       COST Costco Co.                        9545.9
+MSFT Microsoft Corp.                       10845.1       WMT Wal-Mart Stores                    9325.7
+CSCO Cisco Systems                          8731.4       PEP    PepsiCo Inc.                    9180.7
+INTC Intel Corp.                            8385.8       LO     Lorillard Inc.                  8919.0
+QCOM QUALCOMM Inc.                          7739.4       UST    UST Inc.                        8433.1
+CRM Salesforce Com Inc.                     7691.9       GIS    General Mills                   8243.3
+WFR MEMC Electronic Materials               7392.8       KMB Kimberly-Clark                     8069.5
+
+Utilities (U)                                            Telecommunications Services (TS)
+Symbol Company                              AMC          Symbol Company                         AMC
+ETR       Entergy Corp.                    12798.7       T      AT&T Inc.                       6336.2
+EXC       Exelon Corp.                      9738.8       VZ     Verizon Communications          5732.5
+CEG       Constellation Energy Group        9061.5       EQ     Embarq Corporation              5318.7
+FE        FirstEnergy Corp.                 8689.4       AMT American Tower Corp.               5195.6
+FPL       FPL Group                         7742.8       CTL    Century Telephone               4333.8
+SRE       Sempra Energy                     6940.6       S      Sprint Nextel Corp.             2533.7
+STR       Questar Corp.                     6520.4       Q      Qwest Communications Int        2201.3
+TEG       Integrys Energy Group Inc.        5978.4       WIN    Windstream Corporation          2089.1
+EIX       Edison Int’l                      5877.5       FTR    Frontier Communications         1580.9
+AYE       Allegheny Energy                  5864.9
+== PAGE 16 ==
+                                                                                                                                    16
+
+            0.3                                                         decay. Here, we address this point by introducing the
+                    i=AAPL, j=MSFT                                      cross–response noise νij (τ ) as an estimator: We deter-
+           0.25     i=MSFT, j=AAPL
+                                                                                           (c)
+                    i=XOM, j=CVX                                        mine the number Tij common to stocks i and j in which
+                    i=GS,   j=JPM
+            0.2
+                                                                        trading took place. We label these days with a running
+νij (τ )   0.15
+                                                                        integer number and separate our data into two sets, for
+                                                                        days with even and odd numbers, respectively. We work
+            0.1                                                                                                            (k)
+                                                                        out the corresponding cross–response functions Rij (τ )
+           0.05                                                         with k = 1, 2 for the averages over odd or even days.
+                                                                        Each of these two functions should be very close to the
+              0
+            0.3                                                         cross–response function Rij (τ ) averaged over all days.
+                    i=AAPL, j=GS                                        Thus, we introduce a cross–response noise as some kind
+           0.25     i=GS,   j=AAPL
+                    i=GS,   j=XOM                                       of normalized Euclidian distance
+            0.2     i=XOM, j=AAPL
+
+
+νij (τ )
+           0.15                                                                                v
+                                                                                               u 2 
+                                                                                        1      u1 X   (k)
+                                                                                                                        2
+            0.1                                                           νij (τ ) =           t     Rij (τ ) − Rij (τ )         (C1)
+                                                                                     |Rij (τ )| 2
+           0.05
+                                                                                                    k=1
+
+             0
+                0                    1               2              3
+             10                 10              10             10
+                                         τ /s                           for each value of the time lag τ . In Fig. 10 we present
+                                                                        the empirical results for the cross–response noise during
+ FIG. 10. Cross–response noise νij (τ ) for stock different pairs       the year 2008. Obvious, most stock pairs do not suffer
+ during the year 2008 versus the time lag τ measured on a               from large cross–response noise for time lags smaller than
+ logarithmic scale. Stock pairs from the same economic sector           about 120 seconds. During this period, the noise lies
+ (top), pairs of stocks from different sectors (bottom).                below a value of about 0.06. With increasing time lag,
+                                                                        the noise becomes very strong, indicating unstable cross–
+                                                                        response. The largest values the noise reaches are higher
+ is used. Here, M − MP is referred to as the number of                  than 0.25 for lags tending towards 1000 seconds. This
+ degrees of freedom. In our case, we have M = 1000,                     is the reason why some stock pairs show upwards trends
+ MP = 3 for the fitting of trade sign cross–correlators in              after reversing back. As the sign cross–correlator weakens
+ stock pairs.                                                           in the regime of large time lag, other factors dominate,
+                                                                        leading to the large cross–response fluctuations. Limited
+                                                                        statistics blurs the picture, since there are only 22200
+                    Appendix C: Cross–response noise                    seconds of effective trading time in each trading day. This
+                                                                        clearly demonstrates that, when looking at the cross–
+   As pointed out above, the cross–response functions and               response, the lags considered must not be too large to
+ the sign cross–correlators strongly fluctuate during the               obtain meaningful results.
+
+
+
+
+     [1] R. Cont, Quantitative Finance 1(2), 223 (2001)                  [8] T.A. Schmitt, R. Schäfer, M.C. Münnix, T. Guhr, Euro-
+     [2] T. Chordia, R. Roll, A. Subrahmanyam, Journal of Fi-                phys. Lett. 100(3), 38005 (2012)
+         nancial Economics 65(1), 111 (2002)                             [9] T.A. Schmitt, D. Chetalova, R. Schäfer, T. Guhr, arXiv
+     [3] J.P. Bouchaud, M. Potters, Theory of Financial Risk                 preprint arXiv:1304.5130 (2013)
+         and Derivative Pricing: From Statistical Physics to Risk       [10] J. Doyne Farmer, L. Gillemot, F. Lillo, S. Mike, A. Sen,
+         Management (Cambridge University Press, 2003)                       Quantitative Finance 4(4), 383 (2004)
+     [4] J.P. Bouchaud, J.D. Farmer, F. Lillo, How markets slowly       [11] J.P. Bouchaud, Y. Gefen, M. Potters, M. Wyart, Quan-
+         digest changes in supply and demand, in Handbook of                 titative Finance 4(2), 176 (2004)
+         Financial Markets: Dynamics and Evolution, edited by           [12] F. Lillo, J.D. Farmer, Studies in Nonlinear Dynamics &
+         T. Hens, K.R. Schenk-Hoppé (North-Holland, Elsevier,               Econometrics 8(3) (2004)
+         2009), p. 57                                                   [13] F. Lillo, S. Mike, J.D. Farmer, Phys. Rev. E 71(6),
+     [5] A. Chakraborti, I.M. Toke, M. Patriarca, F. Abergel,                066122 (2005)
+         Quantitative Finance 11(7), 991 (2011)                         [14] B. Tóth, I. Palit, F. Lillo, J.D. Farmer, Journal of Eco-
+     [6] B. Tóth, Y. Lemperiere, C. Deremble, J. De Latail-                 nomic Dynamics and Control 51, 218 (2015)
+         lade, J. Kockelkoren, J.P. Bouchaud, Phys. Rev. X 1(2),        [15] J.A. Hausman, A.W. Lo, A.C. MacKinlay, Journal of
+         021006 (2011)                                                       Financial Economics 31(3), 319 (1992)
+     [7] Z. Eisler, J.P. Bouchaud, J. Kockelkoren, Quantitative         [16] A. Kempf, O. Korn, Journal of Financial Markets 2(1),
+         Finance 12(9), 1395 (2012)                                          29 (1999)
+== PAGE 17 ==
+                                                                                                                         17
+
+[17] A. Dufour, R.F. Engle, The Journal of Finance 55(6),      [27] M. Potters, J.P. Bouchaud, Physica A: Statistical Me-
+     2467 (2000)                                                    chanics and its Applications 324(1), 133 (2003)
+[18] V. Plerou, P. Gopikrishnan, X. Gabaix, H.E. Stanley,      [28] A. Gerig, arXiv preprint arXiv:0804.3818 (2008)
+     Phys. Rev. E 66(2), 027104 (2002)                         [29] C. Lee, M.J. Ready, The Journal of Finance 46(2), 733
+[19] B. Rosenow, International Journal of Modern Physics C          (1991)
+     13(03), 419 (2002)                                        [30] R.W. Holthausen, R.W. Leftwich, D. Mayers, Journal of
+[20] J.P. Bouchaud, J. Kockelkoren, M. Potters, Quantitative        Financial Economics 19(2), 237 (1987)
+     Finance 6(02), 115 (2006)                                 [31] Tradingphysics, http://www.tradingphysics.com
+[21] S. Mike, J.D. Farmer, Journal of Economic Dynamics        [32] J. Beran, Statistics for Long-Memory Processes, Vol. 61
+     and Control 32(1), 200 (2008)                                  (CRC Press, 1994)
+[22] E.F. Fama, The Journal of Finance 25(2), 383 (1970)       [33] S.M. Bartram, F. Fehle, D.G. Shrider, Journal of Futures
+[23] D.K. Gode, S. Sunder, Journal of Political Economy             Markets 28(5), 417 (2008)
+     101(1), 119 (1993)                                        [34] H. Demsetz, The Quarterly Journal of Economics 82(1),
+[24] F. Lillo, J.D. Farmer, R.N. Mantegna, Nature 421(6919),        33 (1968)
+     129 (2003)                                                [35] P.R. Bevington, D.K. Robinson, Data Reduction and Er-
+[25] X. Gabaix, P. Gopikrishnan, V. Plerou, H.E. Stanley,           ror Analysis for the Physical Sciences (McGraw–Hill,
+     Nature 423(6937), 267 (2003)                                   New York, 2003)
+[26] V. Plerou, P. Gopikrishnan, X. Gabaix, H.E. Stanley
+     et al., Quantitative Finance 4(1), C11 (2004)
+== PAGE 18 ==
+

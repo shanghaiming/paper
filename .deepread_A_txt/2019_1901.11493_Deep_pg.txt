@@ -1,0 +1,383 @@
+== PAGE 1 ==
+     Deep Recurrent Factor Model: Interpretable Non-Linear and Time-Varying
+                              Multi-Factor Model
+                           Kei Nakagawa1 , Tomoki Ito2 , Masaya Abe1 , Kiyoshi Izumi2
+                                         1
+                                    Nomura Asset Management Co., Ltd., Tokyo, Japan
+                                   2
+                               School of Engineering, The University of Tokyo, Tokyo, Japan
+                 {k-nakagawa, m-abe}@nomura-am.co.jp, m2015titoh@socsim.org, izumi@sys.t.u-tokyo.ac.jp
+
+
+                            Abstract                                 until now, linear multi-factor models are one of the most im-
+                                                                     portant tools in equity portfolio management. Institutional
+  A linear multi-factor model is one of the most important tools     investors are accountable to those whose money they invest.
+  in equity portfolio management. The linear multi-factor mod-       Linear multi-factor models are so widely used because they
+  els are widely used because they can be easily interpreted.
+                                                                     can be easily interpreted. There are two ways to use a linear
+  However, ﬁnancial markets are not linear and their accuracy
+  is limited. Recently, deep learning methods were proposed to       multi-factor model: as a return or risk model, where the re-
+  predict stock return in terms of the multi-factor model. Al-       turn model is used for predicting stock returns and the risk
+  though these methods perform quite well, they have signiﬁ-         model for describing the factor attribution of the predicted
+  cant disadvantages such as a lack of transparency and limita-      stock return. However, it is well-known that ﬁnancial mar-
+  tions in the interpretability of the prediction. It is thus dif-   kets are not linear (Mandelbrot 1997).
+  ﬁcult for institutional investors to use black-box-type ma-
+  chine learning techniques in actual investment practice be-
+  cause they should show accountability to their customers.
+                                                                        Recently, deep learning methods were proposed to predict
+  Consequently, the solution we propose is based on LSTM             stock returns in terms of multi-factor models (Levin 1996;
+  with LRP. Speciﬁcally, we extend the linear multi-factor           Abe and Nakayama 2018). Deep learning has been proven to
+  model to be non-linear and time-varying with LSTM. Then,
+  we approximate and linearize the learned LSTM models by
+                                                                     be a powerful machine learning technique with various ap-
+  LRP. We call this LSTM+LRP model a deep recurrent fac-             plications (LeCun, Bengio, and Hinton 2015), and can take
+  tor model. Finally, we perform an empirical analysis of the        the nonlinearity of factors into consideration. However, it
+  Japanese stock market and show that our recurrent model has        has not yet made possible the consideration of time-varying
+  better predictive capability than the traditional linear model     factors. Therefore, we propose implementing a non-linear
+  and fully-connected deep learning methods.                         time-varying multi-factor model with long short-term mem-
+                                                                     ory (LSTM), which is a representative model to express a
+                                                                     time-varying non-linear relationship. Although LSTM per-
+                        Introduction                                 forms well in many sequential prediction problems, it has
+Stock return has predictability been an important research           signiﬁcant disadvantages, such as a lack of transparency and
+theme, both academically and practically. In empirical ﬁ-            limitations in the interpretability of the prediction. As it is
+nance, the typical method to predict stock returns is cross-         difﬁcult for institutional investors to use black-box-type ma-
+section (regression) analysis using cross-sectional data of          chine learning technique such as LSTM in actual investment
+corporate attributes. The attribute that explains the stock          practice because they need to be accountable to their cus-
+return as revealed by the cross-section analysis is called           tomers, we present the application of layer-wise relevance
+a factor. A model that explains stock returns using mul-             propagation (LRP) (Bach et al. 2015) to linearize the pro-
+tiple factors is called multi-factor model. A representative         posed LSTM model. We consider this LSTM+LRP model
+multi-factor model is the Fama–French three-factor model             a deep recurrent factor model. We can model non-linear
+(Fama and French 1992; 1993), which proposed that the                and time-varying factors as a return model and comprehend
+cross-sectional structure of the stock return can be explained       which factor contributes to the prediction as a risk model.
+by three factors: beta (market portfolio), size (market cap-
+italization), value (PBR). Since then, many other factors
+were identiﬁed. Speciﬁcally, Harvey, Liu, and Zhu (2016)                The remainder of this paper is organized as follows. We
+reported over 300 identiﬁed factors by 2012.                         formulate our deep recurrent factor model in the next sec-
+   Almost all these multi-factor models, including the Fama-         tion. Then, we empirically analyze the Japanese stock mar-
+French three-factor model, are linear regression models and          ket and show that our model has a better predictive capa-
+                                                                     bility than the traditional linear model and fully-connected
+Copyright � c 2019, Association for the Advancement of Artiﬁcial     deep learning methods. Finally, we review related works and
+Intelligence (www.aaai.org). All rights reserved.                    conclude.
+== PAGE 2 ==
+          Deep Recurrent Factor Model with
+                    LSTM-LRP                                                                   it     =     σ(Wi ht−1 + Ui xt + bi )                    (6)
+Non-Linear and Time-Varying Multi-Factor Model                                                 ft     =     σ(Wf ht−1 + Uf xt + bf )                    (7)
+Here, we formulate the deep recurrent factor model. The tra-                                   ot     =     σ(Wo ht−1 + Uo xt + bo )                    (8)
+ditional linear multi-factor model assumes that stock return
+ri can be described as follows:                                                                gt     =     tanh(Wg ht−1 + Ug xt + bg )                 (9)
+                                                                                               ct     =     ft � ct−1 + it � gt                        (10)
+          ri = αi + Xi1 F1 + · · · + XiN FN + εi ,                          (1)                ht     =     ot � tanh(ct ),                            (11)
+
+   where Fn are a set of factor returns, Xin denotes the i-th                      where σ is the sigmoid function and i, f, o, c are, respec-
+stock’s exposure to factor n, αi is an intercept term assumed                      tively, the input, forget, output gate, and cell memory values
+to be equal to a risk-free rate of return under the arbitrage                      in response to input vector at time t. Here, the initial values
+pricing theory framework (Ross 2013). εi is a random term                          are c0 = 0 and h0 = 0. Above, the activation functions σ
+with mean 0 and assumed to be uncorrelated across other                            and tanh are applied element-wise. Moreover, operator �
+random terms. Usually, factor exposure Xin is deﬁned by                            denotes the Hadamard product(element-wise product).
+the linearity of several descriptors.                                                 Next, from the viewpoint of the risk model, we calculate
+   While linear multi-factor models are effective tools for                        the decomposition of the predicted return by LRP. LRP is
+equity portfolio management, the assumption of a linear re-                        a method used to explain the output of the neural network
+lationship is rather restrictive. Speciﬁcally, linear models as-                   based on input values. Speciﬁcally, LRP distributes the out-
+sume that each factor affects the stock return independently,                      put to the input through relevance score R. The relevance
+but ignore the possible interactions between factors and the                       score is propagated from the output to the input layer in a
+time-dependency of factor exposures and returns as shown                           form close to a chain rule.
+in Table 1.                                                                           Two types of relevance calculation methods, weighted
+   We extend equation (1) to the non-linear time-dependent                         and multiplicative connections, are proposed to calculate the
+model:                                                                             LRP of the LSTM network (Arras et al. 2017).
+                                                                                   Weighted connections Assume we know relevance scores
+     ri (t)      =       f˜(Xi1 (t)F1 (t) + Xi1 (t − 1)F1 (t − 1) +                 Rj of neurons zj and want to compute scores Ri of lower-
+                                                                                    layer neurons zi . Values zj are computed during forward-
+                 ···     +XiN (t)FN (t) + · · ·) + εi (t),                  (2)
+                                                                                    pass as follows:
+   where ri (t), εi (t), Fn (t), Xin (t) are respectively i’s stock                                        �
+return, random term, n-th factor return, and factor exposure                                         zj =     (wij × zi + bj ).          (12)
+at time t. Here, f˜ is a non-linear function that does not sat-                                                   i
+isfy either or both of the following conditions:                                     Then, relevance scores Ri←j are calculated as:
+                                                                                                                       ε×sign(z +b )
+                       f (x + y) = f (x) + f (y),                           (3)                           wij × zi +      N
+                                                                                                                            j   j
+
+                                                                                              Ri←j =                              × Rj ,               (13)
+                                f (αx) = αf (x).                            (4)                              zj + ε × sign(zj )
+   Prediction with the non-linear time-varying model (2) is                         where N is the number of lower-layer neurons to which
+more complex than that with the linear one since it requires                        zj is connected and ε is a small positive real number to
+both factor returns and unknown function f˜. Similar to a                           ensure non-negativity.
+previous study (Levin 1996), we assume factor returns are                          Multiplicative connections To apply LRP to LSTM layers,
+constants F̄n . This assumption is also used in a linear multi-                     we have to consider the gating mechanism. Let zj of the
+factor model. The prediction task can thus be simpliﬁed,                            upper-layer be calculated as zj = zg × zs by lower lay-
+since the factor returns are no longer variables.                                   ers zg and zs . Here, zg is the gate, whose activation is
+   Time-dependent model (2) can be transformed as follows:                          between 0 and 1, and zs is the source that carries the in-
+                                                                                    formation from the lower layer or previous layers. Then,
+ ri (t)    =       f˜(Xi1 (t)F1 (t) + Xi1 (t − 1)F1 (t − 1) +                       the backpropagation rule is simply Rg = 0 and Rs = Rj .
+           ···     +XiN (t)FN (t) + · · ·) + εi (t)                                 It may seem that the values of zg and zs are disregarded;
+           =       f (Xi1 (t), Xi1 (t − 1), . . . , XiN (t), . . .) + εi (t),(5)    however, they were already considered in Rj , which de-
+                                                                                    pends on zj .
+  To estimate the unknown non-linear function f , we use
+                                                                                      We linearize the LSTM models by LRP and rewrite the
+LSTM model.
+                                                                                   relevance score Rj corresponding to input Xin (t) with
+Implementation with LSTM-LRP                                                       βin (t):
+We use the LSTM model (Hochreiter and Schmidhuber
+1997; Gers and Schmidhuber 2000) as a representation of                              ri (t)   =     f (Xi1 (t), Xi1 (t − 1), . . . , XiN (t), . . .) + εi (t)
+equation (14):                                                                                ≈     βi1 (t)Xi1 (t) + . . . + βiN XiN (t), . . . + εi (t).(14)
+== PAGE 3 ==
+                                                                                               We train all models by using the latest 60 sets of training
+      𝑋(𝑡): Factors                   𝑋(𝑡): Factors                     𝑋(𝑡): Factors
+                                                                                            data from the past ﬁve years. We decided the hyper param-
+                                                                                            eters of deep factor and deep recurrent factor models using
+    Stock Market                      Black Box                      Deep Recurrent
+                                                                      Factor Model
+                                                                                            1/60 of each training dataset as the validation dataset. The
+                           LSTM                             LRP
+                                                                                            models are updated by sliding one month ahead and carry-
+                           Approx.                         Approx.                          ing out a monthly forecast. The prediction period is from
+                                                                     𝑟 𝑡 = ෍ 𝛽 𝑡 𝑋(𝑡)
+                                                                                            April 2007 to March 2015. To verify the effectiveness of
+ 𝑟 𝑡 = 𝑓(𝑋 𝑡 , … , 𝑋(1))                                                                    each method, we compare the prediction accuracies of these
+                                                                                            models and the proﬁtability of the quintile portfolio. We also
+                                                                                            construct a long/short portfolio strategy for a net-zero invest-
+    𝑟(𝑡): Stock Returns              𝑟(𝑡): Stock Returns              𝑟(𝑡): Stock Returns
+                                                                                            ment to buy top stocks and sell bottom stocks with equal
+                                                                                            weights in quintile portfolios. For quintile portfolio perfor-
+                                                                                            mance, we calculate the annualized average return, volatil-
+               Figure 1: Deep recurrent factor model                                        ity, and Sharpe ratio(= return/volatility). Additionally, we
+                                                                                            calculate the average mean absolute error (MAE) and root
+                                                                                            mean squared error (RMSE) for the prediction period as pre-
+   Here, βi1 (t) can be interpreted as a factor return lin-                                 diction accuracy.
+earized by LRP. The factor return of the traditional linear
+multi-factor model is calculated for the investment universe,                               Results
+whereas the factor return linearized by LRP is calculated for                               Table 4 lists the average MAEs and RMSEs of all years,
+each stocks in the investment universe. We can model the                                    along with the annualized return, volatility, and Sharpe ratio
+non-linearity and time-dependency of factors as the return                                  for each method. The best values appears in bold on each
+model and identify which factor contributes to the predic-                                  row.
+tion as a risk model. Figure 1 shows the outline of the deep                                   The LSTM model has the best prediction accuracy
+recurrent factor model.                                                                     in terms of MAE and RMSE. On the other hand, the
+                                                                                            LSTM+LRP model is the most proﬁtable in terms of the
+     Experiment on Japanese Stock Markets                                                   Sharpe ratio. In any case, we ﬁnd that the LSTM and DNN
+                                                                                            models exceed the linear model in terms of accuracy and
+Data                                                                                        proﬁtability. This implies that the relationship between stock
+We prepare a dataset of TOPIX500 index constituents.                                        returns on the ﬁnancial market and the factor is non-linear.
+TOPIX500 is a well-accepted stock market index for the                                      We also ﬁnd that the LSTM model exceeds the DNN model
+Tokyo Stock Exchange (TSE) in Japan and comprises the                                       and the LSTM+LRP model exceeds the DNN+LRP model
+large and mid-cap segments of the Japanese market. The in-                                  in terms of accuracy and proﬁtability. These facts imply that
+dex is also often used as a benchmark for overseas institu-                                 the relationship between stock returns on the ﬁnancial mar-
+tional investors investing in Japanese stocks.                                              ket and the factor is time-varying. Although the accuracy
+   We use the ﬁve factors and 16 factor descriptors listed in                               decreased slightly because of the linearization by LRP, the
+Table 1. These are used relatively often in practice and are                                deep recurrent factor model, which can capture such a non-
+studied most widely in academia (Jurczenko 2015).                                           linear and time-varying relationship, is thought to be supe-
+                                                                                            rior.
+   In calculating these factors, we acquire the necessary data
+from the Nikkei Portfolio Master (NPM) and Bloomberg.                                       Interpretation
+Factor descriptors are calculated on a monthly basis (at the
+end of month) from December 1990 to March 2015 as in-                                       Here, we conﬁrm that the effect of the LRP approximation
+put data and stock returns with dividends are acquired on a                                 on performance is high in terms of the return model. We
+monthly basis (at the end of month) as output data.                                         interpret the top quintile portfolio based on the factor using
+                                                                                            the linear, deep factor, and deep recurrent factor models as
+                                                                                            of March 2015.
+Models                                                                                         The contributions of each descriptor calculated by LRP
+Our problem is identifying prediction model f (x) of an out-                                are summed up for each factor and displayed as percentiles.
+put Y , for the next month’s stock returns given an input X                                 We can thus identify which factor contributes to the predic-
+and various descriptors. One set of training data is shown                                  tion as a risk model compared to linear model, as shown in
+in Table 2. In addition to the proposed deep recurrent fac-                                 Figure 2.
+tor model, we use a linear regression model as baseline,                                       Although the values of the contributions are different in
+support vector regression (SVR(Drucker et al. 1997)), ran-                                  each model, the order is almost the same. Value, size, qual-
+dom forest(Breiman 2001), and fully-connected deep learn-                                   ity, risk, and momentum factors contribute to the prediction
+ing (deep factor model) as comparison methods. The deep                                     in this order. As described above, the contribution is simi-
+factor model and deep recurrent factor model are imple-                                     lar to the linear model, but prediction performance is better
+mented with Chainer (Tokui et al. 2015) and the comparison                                  than the linear model, as shown in Table 4. We can observe
+methods with scikit-learn (Pedregosa et al. 2011). Table 3                                  that the size and value factors account for more than half of
+lists the details of each model.                                                            the contribution to the top quintile portfolio. Generally, the
+== PAGE 4 ==
+                                                    Table 1: Factors and factor descriptors
+           Factors        Descriptors                                               Formulas
+                         60VOL            Standard deviation of stock returns in the past 60 months (Ang et al. 2006)
+         Risk            BETA             Regression coefﬁcient of stock returns and market risk premium (Sharpe 1964)
+                         SKEW             Skewness of stock returns in the past 60 months (Boyer, Mitton, and Vorkink 2009)
+                         ROE              Net income/Net assets (Soliman 2008)
+                         ROA              Operating Proﬁt/Total assets (Soliman 2008)
+         Quality
+                         ACCRUALS         Operating cashﬂow Operating proﬁt (Novy-Marx 2013)
+                         LEVERAGE         Total liabilities/Total assets (Soliman 2008)
+                         12-1MOM          Stock returns in the past 12 months except for the last month (Jegadeesh and Titman 1993)
+         Momentum        1MOM             Stock returns in the past month (Jegadeesh and Titman 1993)
+                         60MOM            Stock returns in the past 60 months (Jegadeesh and Titman 2001)
+                         PSR              Sales/Market value (Suzuki 1998)
+                         PER              Net income/Market value (Basu 1977)
+         Value           PBR              Net assets/Market value (Fama and French 1992)
+                         PCFR             Operating cashﬂow/Market value (Hou, Karolyi, and Kho 2011)
+                         CAP              log(Market value) (Fama and French 1992)
+         Size
+                         ILLIQ            average(abs(Stock returns)/Trading volume) (Amihud 2002)
+
+
+                                                                           forecasts of stock market returns. However, there is no paper
+      Table 2: One set of training data for March 2015                     that deals with the prediction method in terms of a multi-
+                 Input: 80 dim         Output: 1 dim
+                                                                           factor model.
+                 Factor descriptors:
+                    16 × 5 dim                                                Levin (1996) discussed the use of multilayer feed for-
+                                          Return:                          ward neural networks for predicting stock returns within the
+                                           1 dim
+                  February 2015                                            framework of the multi-factor model. Abe and Nakayama
+                  November 2014                                            (2018) extended this model to deep learning and investi-
+                   August 2014                                             gated the performance of the method on the Japanese stock
+                                        March 2015
+                    May 2014                                               market. They showed that deep neural networks generally
+                  February 2014                                            outperform shallow ones, and the best networks also outper-
+                                                                           form representative machine learning models. These results
+                                                                           indicate deep learning holds promise as a skillful machine
+                                                                           learning method to predict stock returns in cross-section.
+                                                                              However, these works are only for use as a return model,
+                                                                           and the problem is that the viewpoint of a risk model is lack-
+                                                                           ing. Nakagawa, Uchida, and Aoshima (2018) proposed the
+                                                                           application of LRP to decompose the attributes of the pre-
+                                                                           dicted return as a risk model. However, they do not examine
+                                                                           the inﬂuence on performance due to the approximation of
+                                                                           LRP and not considering the time-dependency of factors. We
+                                                                           thus extend this model to a time-varying multi-factor model
+                                                                           with LSTM+LRP and analyze the effects of the LRP approx-
+                                                                           imation on performance on the Japanese stock market.
+
+
+Figure 2: Factor contributions to the prediction by linear,                                        Conclusions
+deep factor, and deep recurrent factor models
+                                                                           We proposed a deep recurrent factor model that is non-
+                                                                           linear and time-varying multi-factor model implemented
+                                                                           with LSTM+LRP. The empirical analysis of the Japanese
+momentum factor is not very effective, but the value factor
+                                                                           stock market shows the LRP approximation is effective in
+is effective on the Japanese stock market (Fama and French
+                                                                           terms of return and risk models. Our model can capture non-
+2012). For practitioners, we feel this is in line with the actual
+                                                                           linear and time-varying relationship with factors and stock
+Japanese stock market.
+                                                                           return in an interpretable way.
+                                                                              In terms of further study, we would like to conﬁrm the
+                        Related Works                                      effectiveness of our model on stock markets other than the
+Many studies on stock return predictability using machine                  Japanese one. Although we considered 16 factors, some
+learning have been published. Cavalcante et al. (2016) pre-                other macroeconomic variables, such as foreign exchange
+sented a review of the application of several machine learn-               rates, interest rates, and consumer price index, can be used
+ing methods in ﬁnance. In their survey, most of these were                 as inputs.
+== PAGE 5 ==
+                                                 Table 3: Details on each method
+ Model                                     Description
+                                           We used one forward and one backward LSTM cell, where the
+                                           dimensions of the hidden layers and sequence length in the LSTMs are 16 and 5, respectively.
+                               LSTM
+ Deep recurrent factor model               The epoch was 10 with early stopping, which was decided using 1/60 of each training dataset
+                                           as validation dataset. We used Adam (Kinga and Adam 2015) for the optimization algorithm.
+                                           We used one forward and one backward LSTM cell, with the same setting as the LSTM and
+                               LSTM+LRP
+                                           the LRP method with bias factor = 0.0, as described in Arras et al. (2017).
+                                           We used the multi-layer perceptron model, where the dimensions of the hidden layers were 40 or 80,
+                                           number of the hidden layers between 1 and 5,
+                                           and epoch 10 with early stopping.
+                               DNN
+ Deep factor model                         We decided on the hyper parameters in the same manner as with the LSTM.
+                                           We used ReLU as the activation function
+                                           and Adam (Kinga and Adam 2015) for the optimization algorithm.
+                                           We used the multi-layer perceptron model with the same settings as the DNN,
+                               DNN+LRP
+                                           and the LRP method with bias factor = 0.0 as described in Arras et al. (2017).
+                                           Linear model was implemented with scikit-learn
+ Linear model                              with class “sklearn.linear model.LinearRegression.”
+                                           All parameters were default values in this class.
+                                           Support vector regression (SVR) was implemented
+ Support Vector Regression                 with scikit-learn with class “sklearn.svm.SVR.”
+                                           All parameters were default values in this class.
+                                           Random Forest was implemented with scikit-learn
+ Random Forest                             with class “sklearn.ensemble.RandomForestRegressor.”
+                                           All parameters were default values in this class.
+
+
+   Table 4: Average MAEs and RMSEs of all years and annualized returns, volatilities, and Sharpe ratios for each method
+                    Deep recurrent factor model Deep factor model
+                                                                          Linear model        SVR       Random forest
+                     LSTM       LSTM+LRP        DNN        DNN+LRP
+    Return[%]        13.20           15.18      11.23      11.33                6.02          6.63            5.44
+    Volatility [%]   15.01           11.60      14.90      14.77               13.31         17.52           11.69
+    Sharpe Ratio      0.88           1.31       0.75       0.77                 0.45          0.38            0.47
+    MAE             0.07492        0.07654      0.07570 0.07671              0.08033        0.08497         0.08231
+    RMSE            0.09830        0.09912      0.09914 0.09999              0.10533        0.10911         0.10791
+
+
+                     Acknowledgements                                  cient market hypothesis. The journal of Finance 32(3):663–
+We thank Tsuyoshi Ogawa and Yuya Morooka for discus-                   682.
+sions and insights that helped clarify the ideas in this paper.        Boyer, B.; Mitton, T.; and Vorkink, K. 2009. Expected
+                                                                       idiosyncratic skewness. The Review of Financial Studies
+                         References                                    23(1):169–202.
+Abe, M., and Nakayama, H. 2018. Deep learning for fore-                Breiman, L. 2001. Random forests. Machine learning
+casting stock returns in the cross-section. In Paciﬁc-Asia             45(1):5–32.
+Conference on Knowledge Discovery and Data Mining.                     Cavalcante, R. C.; Brasileiro, R. C.; Souza, V. L.; Nobrega,
+Amihud, Y. 2002. Illiquidity and stock returns: cross-                 J. P.; and Oliveira, A. L. 2016. Computational intelligence
+section and time-series effects. Journal of ﬁnancial markets           and ﬁnancial markets: A survey and future directions. Expert
+5(1):31–56.                                                            Systems with Applications 55:194–211.
+Ang, A.; Hodrick, R. J.; Xing, Y.; and Zhang, X. 2006. The             Drucker, H.; Burges, C. J.; Kaufman, L.; Smola, A. J.; and
+cross-section of volatility and expected returns. The Journal          Vapnik, V. 1997. Support vector regression machines. In Ad-
+of Finance 61(1):259–299.                                              vances in neural information processing systems, 155–161.
+Arras, L.; Montavon, G.; Müller, K.-R.; and Samek, W.                 Fama, E. F., and French, K. R. 1992. The cross-section of
+2017. Explaining recurrent neural network predictions in               expected stock returns. the Journal of Finance 47(2):427–
+sentiment analysis. EMNLP 2017 159.                                    465.
+Bach, S.; Binder, A.; Montavon, G.; Klauschen, F.; Müller,            Fama, E. F., and French, K. R. 1993. Common risk fac-
+K.-R.; and Samek, W. 2015. On pixel-wise explanations for              tors in the returns on stocks and bonds. Journal of ﬁnancial
+non-linear classiﬁer decisions by layer-wise relevance prop-           economics 33(1):3–56.
+agation. PloS one 10(7):e0130140.                                      Fama, E. F., and French, K. R. 2012. Size, value, and mo-
+Basu, S. 1977. Investment performance of common stocks                 mentum in international stock returns. Journal of ﬁnancial
+in relation to their price-earnings ratios: A test of the efﬁ-         economics 105(3):457–472.
+== PAGE 6 ==
+Gers, F. A., and Schmidhuber, J. 2000. Recurrent nets that       Tokui, S.; Oono, K.; Hido, S.; and Clayton, J. 2015. Chainer:
+time and count. In Proceedings of the IEEE-INNS-ENNS             a next-generation open source framework for deep learning.
+International Joint Conference on Neural Networks. IJCNN         In Proceedings of workshop on machine learning systems
+2000. Neural Computing: New Challenges and Perspectives          (LearningSys) in the twenty-ninth annual conference on neu-
+for the New Millennium, volume 3, 189–194. IEEE.                 ral information processing systems (NIPS), volume 5, 1–6.
+Harvey, C. R.; Liu, Y.; and Zhu, H. 2016. and the cross-
+section of expected returns. The Review of Financial Studies
+29(1):5–68.
+Hochreiter, S., and Schmidhuber, J. 1997. Long short-term
+memory. Neural computation 9(8):1735–1780.
+Hou, K.; Karolyi, G. A.; and Kho, B.-C. 2011. What factors
+drive global stock returns? The Review of Financial Studies
+24(8):2527–2574.
+Jegadeesh, N., and Titman, S. 1993. Returns to buying win-
+ners and selling losers: Implications for stock market efﬁ-
+ciency. The Journal of ﬁnance 48(1):65–91.
+Jegadeesh, N., and Titman, S. 2001. Proﬁtability of momen-
+tum strategies: An evaluation of alternative explanations.
+The Journal of ﬁnance 56(2):699–720.
+Jurczenko, E. 2015. Risk-Based and Factor Investing. Else-
+vier.
+Kinga, D., and Adam, J. B. 2015. A method for stochas-
+tic optimization. In International Conference on Learning
+Representations (ICLR), volume 5.
+LeCun, Y.; Bengio, Y.; and Hinton, G. 2015. Deep learning.
+nature 521(7553):436.
+Levin, A. E. 1996. Stock selection via nonlinear multi-factor
+models. In Advances in Neural Information Processing Sys-
+tems, 966–972.
+Mandelbrot, B. B. 1997. The variation of certain speculative
+prices. In Fractals and scaling in ﬁnance. Springer. 371–
+418.
+Nakagawa, K.; Uchida, T.; and Aoshima, T. 2018. Deep fac-
+tor model. In MIDAS @ECML-PKDD 2018 - 3rd Workshop
+on MIning DAta for ﬁnancial applicationS.
+Novy-Marx, R. 2013. The other side of value: The gross
+proﬁtability premium. Journal of Financial Economics
+108(1):1–28.
+Pedregosa, F.; Varoquaux, G.; Gramfort, A.; Michel, V.;
+Thirion, B.; Grisel, O.; Blondel, M.; Prettenhofer, P.; Weiss,
+R.; Dubourg, V.; et al. 2011. Scikit-learn: Machine
+learning in python. Journal of machine learning research
+12(Oct):2825–2830.
+Ross, S. A. 2013. The arbitrage theory of capital asset pric-
+ing. In HANDBOOK OF THE FUNDAMENTALS OF FI-
+NANCIAL DECISION MAKING: Part I. World Scientiﬁc.
+11–30.
+Sharpe, W. F. 1964. Capital asset prices: A theory of market
+equilibrium under conditions of risk. The journal of ﬁnance
+19(3):425–442.
+Soliman, M. T. 2008. The use of dupont analysis by market
+participants. The Accounting Review 83(3):823–853.
+Suzuki, M. 1998. Psran efﬁcient stock-selection tool? In-
+ternational Journal of Forecasting 14(2):245–254.
+== PAGE 7 ==
+

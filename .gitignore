@@ -1,0 +1,15 @@
+# 版权书与镜像: 永不入库 (版权书只能本地读; 防未来误推)
+pdfs/
+pdfs_theory/
+quanxue_mirror/
+kahneman_*.txt
+lebon_*.txt
+
+# 数据工件 (推送纪律: 数据不入库)
+exam2/cache_pool.npz
+*.npz
+__pycache__/
+*.pyc
+
+# 会话草稿
+.scratch_*
