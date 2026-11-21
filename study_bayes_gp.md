@@ -220,4 +220,4 @@
 
 ---
 
-读序 16 收官。→ 读序 17: Boyd & Vandenberghe《Convex Optimization》(Cambridge University Press 2004; 作者 Stanford 官方 cvxbook 免费电子版; GPML 块18-19 O(n³) 墙/对偶面/正则化的工程后继, 域=凸优化/数值方法)
+读序 16 收官。→ 读序 17: Sutton & Barto《Reinforcement Learning: An Introduction》2e (MIT Press 2018; 作者官网 incompleteideas.net 官方放送完整版电子稿; 域=强化学习/序贯决策——书架空白域; GPML 带宽-近似-证据三线在序贯决策面的延伸, 亦是策略解剖 2026-08 "alpha 在出场机" 的理论母学科)。初选 Boyd 凸优化因读序5 已有 master (每域单一 master 纪律) 弃, 记档防再撞。
