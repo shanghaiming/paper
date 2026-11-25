@@ -3,7 +3,7 @@
 - 作者: Gareth James, Daniela Witten, Trevor Hastie, Robert Tibshirani, Jonathan Taylor; *An Introduction to Statistical Learning with Applications in Python* (ISLP), 2023, Springer — **官方免费 PDF** (statlearning.com 正版开放获取, 封面明示免费共享非商用), 配套 ISLP Python 包与全书 lab 代码
 - 版权态: 官方免费 PDF 正版 — 按本线纪律只本地读不上云 (pdftotext 本地清洗)
 - 读毕: 2026-11-23; 清洗文本 35169 行 = 63 块 (62×560+末块 449) 逐块读毕; Ch1-Ch13 正文 (含 lab+习题题干) + Index (p.597-607) 全目 全覆盖
-- 纪律: 本文件为读序 28 唯一 master (统计学习/机器学习应用域 — 偏应用域指令第四域: 数值方法 26 fnr → 计量预测 27 fpp3 → 统计学习 28); 与读序 20 Grinstead-Snell / 23 Durrett (概率) / 25 MacKay (信息论) / 26 fnr (数值) / 27 fpp3 (Hyndman) 分层不撞; study 笔记 ≠ kl 卡; 315 条映射自有编号, jsonl 提取校验块齐/编号 1-315 连续无缺无重/聚合 md5 36444b29
+- 纪律: 本文件为读序 28 唯一 master (统计学习/机器学习应用域 — 偏应用域指令第四域: 数值方法 26 fnr → 计量预测 27 fpp3 → 统计学习 28); 与读序 20 Grinstead-Snell / 23 Durrett (概率) / 15 MacKay (信息论) / 26 fnr (数值) / 27 fpp3 (Hyndman) 分层不撞; study 笔记 ≠ kl 卡; 315 条映射自有编号, jsonl 提取校验块齐/编号 1-315 连续无缺无重/聚合 md5 36444b29
 
 ---
 

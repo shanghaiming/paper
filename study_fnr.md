@@ -3,7 +3,7 @@
 - 作者: Bernt Arne Ødegaard (University of Stavanger, 前 UiO); *Financial Numerical Recipes in C++*, web edition (持续维护, 例代码编译于 2024 — 内部证据: Ch27 例输出 "today: 2024-Apr-09"; 参考文献含 2021 版次), 书名血统承 Press et al《Numerical Recipes in C》; 作者主页自发布电子版 官方免费
 - 版权态: 作者官方免费电子版 — 按本线纪律只本地读不上云
 - 读毕: 2026-11-23; 清洗文本 13108 行 = 24 块 (23×560+末块 228) 逐块读毕; Ch1-Ch27 正文 + 附录 A (正态近似/随机数) + B (C++ 概念) + C (外部库) + D (fin_recipes.h 总头) + E (安装) + F (致谢) + C++/Matlab 代码清单 + 索引 + 参考文献全目 全覆盖
-- 纪律: 本文件为读序 26 唯一 master (期权定价数值方法/C++ 金融工程域); 与读序 23 Durrett (高等概率论) / 读序 20 Grinstead-Snell (本科概率) / 读序 25 MacKay (信息论) 分层不撞 — 本册是偏应用域指令 (期权定价数值方法) 的正主; study 笔记 ≠ kl 卡; 120 条映射自有编号, jsonl 提取校验 24 块齐/编号 1-120 连续无缺无重/聚合 md5 5e61b0cc
+- 纪律: 本文件为读序 26 唯一 master (期权定价数值方法/C++ 金融工程域); 与读序 23 Durrett (高等概率论) / 读序 20 Grinstead-Snell (本科概率) / 读序 15 MacKay (信息论) 分层不撞 — 本册是偏应用域指令 (期权定价数值方法) 的正主; study 笔记 ≠ kl 卡; 120 条映射自有编号, jsonl 提取校验 24 块齐/编号 1-120 连续无缺无重/聚合 md5 5e61b0cc
 
 ---
 
